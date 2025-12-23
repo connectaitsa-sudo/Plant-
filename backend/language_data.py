@@ -132,15 +132,35 @@ def get_response_template(key, language='en'):
 def is_urdu_query(message):
     """Detect if query is in Roman Urdu"""
     urdu_words = [
-        'kya', 'hai', 'kaise', 'karein', 'karen', 'mujhe', 'mere', 'paudhay',
-        'paudhe', 'bimari', 'ilaaj', 'tamatar', 'aalu', 'paani', 'dhoop',
-        'khaas', 'tasveer', 'madad', 'batayein', 'seekhna', 'chahta',
-        'chahte', 'chahti', 'assalam', 'shukriya', 'meherbani'
+        # Greetings
+        'assalam', 'salam', 'adab', 'walaikum',
+        # Question words
+        'kya', 'kaise', 'kyun', 'kab', 'kahan', 'kitna', 'kitni', 'kaun', 'kis',
+        # Verbs
+        'hai', 'hain', 'ho', 'karein', 'karen', 'karna', 'hota', 'hoti',
+        'batayein', 'bataiye', 'batao', 'samjhayein', 'dekhna', 'dena', 'dein',
+        # Pronouns
+        'mujhe', 'mujhy', 'mere', 'mera', 'meri', 'aap', 'aapka', 'humara',
+        # Plant related
+        'paudhay', 'paudhe', 'paudha', 'patti', 'patte', 'phool', 'phal',
+        # Disease related
+        'bimari', 'beemari', 'bimar', 'ilaaj', 'ilaj', 'dawa', 'daag', 'alamaat',
+        'bachao', 'bachna', 'rokna', 'theek', 'kharaab',
+        # Crops
+        'tamatar', 'aalu', 'alu', 'mirch', 'makai', 'angoor', 'seb', 'strawberry',
+        # Care
+        'paani', 'pani', 'khad', 'dhoop', 'mitti', 'dekhbhal', 'ugana', 'ugayein',
+        # Common words
+        'khaas', 'tasveer', 'madad', 'seekhna', 'chahta', 'chahte', 'chahti',
+        'chahiye', 'zaroori', 'behtar', 'acha', 'buraa', 'zyada', 'kam',
+        'shukriya', 'meherbani', 'maloomat', 'tafseel', 'tareeqa', 'upay'
     ]
     
     message_lower = message.lower()
+    
     # Check if message contains Roman Urdu words
     urdu_word_count = sum(1 for word in urdu_words if word in message_lower)
     
-    # If 2 or more Urdu words found, consider it an Urdu query
-    return urdu_word_count >= 2
+    # If 1 or more strong Urdu words found, consider it an Urdu query
+    # Reduced threshold for better detection
+    return urdu_word_count >= 1

@@ -9,6 +9,7 @@ import About from './components/About'
 import LoadingScreen from './components/LoadingScreen'
 import CTA from './components/CTA'
 import Testimonials from './components/Testimonials'
+import PlantAnalyzer from './components/PlantAnalyzer'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <ParticleBackground />
         <Navigation />
         <Hero />
+        <PlantAnalyzer />
         <Features />
         <About />
         <DiseaseGallery />

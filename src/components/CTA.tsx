@@ -119,7 +119,8 @@ const CTA = () => {
             transition={{ delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
           >
-            <motion.button
+            <motion.a
+              href="#analyzer"
               whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(34, 197, 94, 0.6)' }}
               whileTap={{ scale: 0.95 }}
               className="group px-8 py-5 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold text-lg flex items-center justify-center space-x-2 hover:shadow-2xl transition-all"
@@ -127,7 +128,7 @@ const CTA = () => {
               <Upload className="w-5 h-5" />
               <span>Upload Plant Photo</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
+            </motion.a>
             
             <motion.button
               whileHover={{ scale: 1.05 }}

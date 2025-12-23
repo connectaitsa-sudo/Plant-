@@ -22,6 +22,8 @@ PlantCure is a next-generation plant disease detection platform that combines cu
 
 ### ✨ Key Highlights
 
+- 🤖 **AI-Powered Detection** - Real plant disease analysis using OpenAI GPT-4 Vision or Google Gemini
+- 📸 **Image Analysis** - Upload photos and get instant diagnosis with treatment recommendations
 - 🎨 **Beautiful 3D Visualizations** - Immersive Three.js powered plant models
 - ⚡ **Lightning Fast** - Built with Vite for instant hot module replacement
 - 🎭 **Smooth Animations** - Powered by Framer Motion for fluid transitions
@@ -36,9 +38,11 @@ PlantCure is a next-generation plant disease detection platform that combines cu
 ## ✨ Features
 
 ### 🤖 AI-Powered Analysis
-- Instant disease detection from plant images
-- Deep learning models trained on extensive datasets
-- 98% accuracy rate for common plant diseases
+- **Real AI Integration** with OpenAI GPT-4 Vision and Google Gemini
+- Instant disease detection from uploaded plant images
+- Detailed analysis with confidence scores
+- Comprehensive treatment recommendations
+- Support for multiple AI providers
 
 ### 🎨 3D Visualizations
 - Interactive Three.js scenes with React Three Fiber
@@ -84,6 +88,11 @@ cd plant-disease-detector
 # Install dependencies
 npm install
 
+# Configure API keys (IMPORTANT!)
+# Copy .env.example to .env and add your API keys
+cp .env.example .env
+# Edit .env and add your OpenAI or Gemini API key
+
 # Start development server
 npm run dev
 
@@ -95,6 +104,20 @@ npm run preview
 ```
 
 The application will be available at `http://localhost:3000`
+
+### ⚠️ API Keys Required
+
+To use the AI-powered plant disease detection, you need to configure API keys:
+
+1. **OpenAI API Key** (Recommended)
+   - Get your key: https://platform.openai.com/api-keys
+   - Add to `.env`: `VITE_OPENAI_API_KEY=your-key-here`
+
+2. **Google Gemini API Key** (Alternative)
+   - Get your key: https://makersuite.google.com/app/apikey
+   - Add to `.env`: `VITE_GEMINI_API_KEY=your-key-here`
+
+**See `API_SETUP.md` for detailed configuration instructions.**
 
 ---
 

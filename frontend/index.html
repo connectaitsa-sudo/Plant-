@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Health Detective 🌱</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <h1>Plant Health Detective</h1>
+            </div>
+            <p class="tagline">AI-Powered Plant Disease Detection & Treatment Advisor</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Image Upload & Detection -->
+            <div class="left-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🔍 Disease Detection</h2>
+                        <p>Upload a plant image for instant analysis</p>
+                    </div>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <div class="upload-icon">📸</div>
+                            <p class="upload-text">Drag & Drop or Click to Upload</p>
+                            <p class="upload-subtext">Supports: JPG, PNG, JPEG</p>
+                            <input type="file" id="imageInput" accept="image/*" hidden>
+                            <button class="btn btn-primary" id="uploadBtn">Choose Image</button>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="image-preview hidden" id="imagePreview">
+                        <img id="previewImg" alt="Uploaded plant image">
+                        <button class="btn btn-secondary btn-small" id="removeImageBtn">Remove Image</button>
+                    </div>
+
+                    <!-- Detection Result -->
+                    <div class="detection-result hidden" id="detectionResult">
+                        <div class="result-header">
+                            <h3>Detection Result</h3>
+                            <span class="confidence-badge" id="confidenceBadge">85%</span>
+                        </div>
+                        
+                        <div class="disease-info">
+                            <div class="disease-name" id="diseaseName">Loading...</div>
+                            <div class="severity-badge" id="severityBadge">Moderate</div>
+                            
+                            <div class="info-section">
+                                <h4>📋 Description</h4>
+                                <p id="diseaseDescription">Loading...</p>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h4>⚠️ Symptoms</h4>
+                                <ul id="symptomsList"></ul>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h4>💊 Treatment</h4>
+                                <ol id="treatmentList"></ol>
+                            </div>
+                            
+                            <div class="info-section">
+                                <h4>🛡️ Prevention</h4>
+                                <ul id="preventionList"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div class="loading hidden" id="loadingSpinner">
+                        <div class="spinner"></div>
+                        <p>Analyzing your plant image...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Chatbot -->
+            <div class="right-panel">
+                <div class="card chat-card">
+                    <div class="card-header">
+                        <h2>💬 Plant Health Assistant</h2>
+                        <p>Ask me anything about plant diseases</p>
+                    </div>
+                    
+                    <div class="chat-container" id="chatContainer">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message bot-message">
+                                <div class="message-avatar">🤖</div>
+                                <div class="message-content">
+                                    <p>Hello! 👋 I'm your Plant Health Assistant. I can help you with:</p>
+                                    <ul>
+                                        <li>🔍 Disease Detection & Identification</li>
+                                        <li>💊 Treatment Recommendations</li>
+                                        <li>🌱 Plant Care Tips</li>
+                                        <li>🛡️ Prevention Strategies</li>
+                                    </ul>
+                                    <p>Upload an image to get started, or ask me anything!</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input-container">
+                            <input 
+                                type="text" 
+                                id="chatInput" 
+                                class="chat-input" 
+                                placeholder="Ask about plant diseases, treatments, care tips..."
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-send" id="sendBtn">
+                                <span>Send</span>
+                                <span class="send-icon">➤</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h4>Quick Questions:</h4>
+                        <div class="quick-buttons">
+                            <button class="quick-btn" data-question="What is tomato early blight?">Tomato Blight</button>
+                            <button class="quick-btn" data-question="How do I prevent plant diseases?">Prevention Tips</button>
+                            <button class="quick-btn" data-question="How often should I water my plants?">Watering Guide</button>
+                            <button class="quick-btn" data-question="What are signs of a healthy plant?">Healthy Plants</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🌱 Plant Health Detective - Helping gardeners grow healthier plants | Made with ❤️ for plant lovers</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

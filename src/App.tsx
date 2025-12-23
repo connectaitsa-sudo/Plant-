@@ -10,6 +10,9 @@ import LoadingScreen from './components/LoadingScreen'
 import CTA from './components/CTA'
 import Testimonials from './components/Testimonials'
 import PlantAnalyzer from './components/PlantAnalyzer'
+import AIChatbot from './components/AIChatbot'
+import VideoTreatments from './components/VideoTreatments'
+import DetailedInfo from './components/DetailedInfo'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 
 function App() {
@@ -36,11 +39,14 @@ function App() {
         <Hero />
         <PlantAnalyzer />
         <Features />
+        <VideoTreatments />
+        <DetailedInfo />
         <About />
         <DiseaseGallery />
         <Testimonials />
         <CTA />
         <Footer />
+        <AIChatbot />
       </div>
     </>
   )

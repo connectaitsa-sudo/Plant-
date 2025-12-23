@@ -1,13 +1,17 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Loader, CheckCircle, XCircle, Camera, AlertCircle } from 'lucide-react'
-import { analyzePlantImage, getAIProvider, PlantAnalysisResult } from '../services/ai'
+import * as openaiService from '../services/openai'
+import * as geminiService from '../services/gemini'
+import { PlantAnalysisResult } from '../services/ai'
+import AIProviderSelector from './AIProviderSelector'
 
 const PlantAnalyzer = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [analyzing, setAnalyzing] = useState(false)
   const [result, setResult] = useState<PlantAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [aiProvider, setAIProvider] = useState<'openai' | 'gemini'>('openai')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,14 +52,28 @@ const PlantAnalyzer = () => {
       // Convert to base64 without data URL prefix
       const base64 = imageUrl.split(',')[1]
       
-      // Call AI service
-      const analysisResult = await analyzePlantImage(base64)
+      // Call appropriate AI service based on selection
+      let analysisResult: PlantAnalysisResult
+      if (aiProvider === 'gemini') {
+        analysisResult = await geminiService.analyzePlantImage(base64)
+      } else {
+        analysisResult = await openaiService.analyzePlantImage(base64)
+      }
+      
       setResult(analysisResult)
     } catch (err) {
       console.error('Analysis error:', err)
       setError(err instanceof Error ? err.message : 'Failed to analyze image')
     } finally {
       setAnalyzing(false)
+    }
+  }
+
+  const handleProviderChange = (provider: 'openai' | 'gemini') => {
+    setAIProvider(provider)
+    // If there's a current image, re-analyze with new provider
+    if (selectedImage && !analyzing) {
+      analyzeImage(selectedImage)
     }
   }
 
@@ -110,13 +128,13 @@ const PlantAnalyzer = () => {
             Diagnose Your Plant{' '}
             <span className="text-gradient">Now</span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-4">
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Upload a photo of your plant and get instant AI-powered disease detection
           </p>
-          <p className="text-sm text-gray-500">
-            Powered by {getAIProvider() === 'openai' ? 'OpenAI GPT-4 Vision' : 'Google Gemini AI'}
-          </p>
         </motion.div>
+
+        {/* AI Provider Selector */}
+        <AIProviderSelector provider={aiProvider} onProviderChange={handleProviderChange} />
 
         <div className="max-w-4xl mx-auto">
           {/* Upload Area */}

@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
-from disease_detector import PlantDiseaseDetector
+try:
+    from huggingface_detector import HuggingFaceDetector
+    USE_HUGGINGFACE = True
+except Exception as e:
+    print(f"⚠️ Could not load Hugging Face detector: {e}")
+    from disease_detector import PlantDiseaseDetector
+    USE_HUGGINGFACE = False
 from chatbot import PlantHealthChatbot
 from werkzeug.utils import secure_filename
 import base64
@@ -19,7 +25,13 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Initialize detector and chatbot
-detector = PlantDiseaseDetector()
+if USE_HUGGINGFACE:
+    print("✅ Using Hugging Face Model (38+ diseases)")
+    detector = HuggingFaceDetector()
+else:
+    print("⚠️ Using Basic Detector")
+    detector = PlantDiseaseDetector()
+
 chatbot = PlantHealthChatbot()
 
 def allowed_file(filename):

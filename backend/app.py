@@ -21,6 +21,7 @@ except Exception as e:
     print("⚠️ Using Basic Chatbot")
 
 from treatment_videos import get_treatment_videos
+from video_generator import get_reliable_videos, UNIVERSAL_FALLBACK_VIDEOS
 from werkzeug.utils import secure_filename
 import base64
 
@@ -71,10 +72,19 @@ def detect_disease():
             # Detect disease
             result = detector.detect(filepath)
             
-            # Add treatment videos
+            # Add treatment videos with fallbacks
             if 'disease' in result:
-                videos = get_treatment_videos(result['disease'])
+                videos = get_reliable_videos(result['disease'])
+                
+                # If still no videos, use universal fallbacks
+                if not videos or len(videos) == 0:
+                    videos = UNIVERSAL_FALLBACK_VIDEOS
+                
                 result['treatment_videos'] = videos
+                
+                # Add detection quality message
+                if 'detection_quality' in result:
+                    result['quality_message'] = result['detection_quality']
             
             # Clean up uploaded file
             os.remove(filepath)

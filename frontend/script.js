@@ -179,39 +179,59 @@ function displayDetectionResult(data) {
         .map(prevention => `<li>${prevention}</li>`)
         .join('');
     
-    // Add treatment videos if available
+    // Add treatment videos with embedded player
     if (data.treatment_videos && data.treatment_videos.length > 0) {
-        // Create videos section if it doesn't exist
-        let videosSection = document.getElementById('videosSection');
-        if (!videosSection) {
-            videosSection = document.createElement('div');
-            videosSection.id = 'videosSection';
-            videosSection.className = 'info-section';
-            document.querySelector('.disease-info').appendChild(videosSection);
-        }
+        const videoPlayerSection = document.getElementById('videoPlayerSection');
+        const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+        const moreVideosContainer = document.getElementById('moreVideosContainer');
         
-        let videosHTML = '<h4>🎥 Treatment Video Tutorials</h4>';
-        videosHTML += '<div class="videos-grid">';
+        // Extract YouTube video ID from first video
+        const firstVideo = data.treatment_videos[0];
+        const videoId = extractYouTubeId(firstVideo.url);
         
-        data.treatment_videos.forEach(video => {
-            videosHTML += `
-                <div class="video-card">
-                    <a href="${video.url}" target="_blank" rel="noopener noreferrer">
-                        <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
-                        <div class="video-info">
-                            <div class="video-title">${video.title}</div>
-                            <div class="video-meta">
-                                <span class="video-duration">⏱️ ${video.duration}</span>
-                                <span class="video-channel">📺 ${video.channel}</span>
-                            </div>
-                        </div>
-                    </a>
+        if (videoId) {
+            // Create embedded player with autoplay
+            videoPlayerContainer.innerHTML = `
+                <div class="video-player-wrapper">
+                    <iframe 
+                        width="100%" 
+                        height="400" 
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0" 
+                        title="${firstVideo.title}"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                    <div class="video-player-info">
+                        <h5>${firstVideo.title}</h5>
+                        <p>📺 ${firstVideo.channel} • ⏱️ ${firstVideo.duration}</p>
+                    </div>
                 </div>
             `;
-        });
-        
-        videosHTML += '</div>';
-        videosSection.innerHTML = videosHTML;
+            
+            // Show additional videos if available
+            if (data.treatment_videos.length > 1) {
+                let moreHTML = '<div class="more-videos"><h5>More Treatment Videos:</h5><div class="videos-grid-small">';
+                
+                data.treatment_videos.slice(1).forEach(video => {
+                    const vid = extractYouTubeId(video.url);
+                    moreHTML += `
+                        <div class="video-card-small" onclick="playVideo('${vid}', '${video.title.replace(/'/g, "\\'")}', '${video.channel}', '${video.duration}')">
+                            <img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" alt="${video.title}">
+                            <div class="video-info-small">
+                                <div class="video-title-small">${video.title}</div>
+                                <div class="video-meta-small">⏱️ ${video.duration}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                moreHTML += '</div></div>';
+                moreVideosContainer.innerHTML = moreHTML;
+            }
+            
+            videoPlayerSection.style.display = 'block';
+        }
     }
     
     // Show result
@@ -385,4 +405,36 @@ function escapeHtml(text) {
 
 function showError(message) {
     addBotMessage(`❌ Error: ${message}`);
+}
+
+function extractYouTubeId(url) {
+    // Extract YouTube video ID from URL
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+}
+
+function playVideo(videoId, title, channel, duration) {
+    // Switch to different video in player
+    const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+    videoPlayerContainer.innerHTML = `
+        <div class="video-player-wrapper">
+            <iframe 
+                width="100%" 
+                height="400" 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+                title="${title}"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+            <div class="video-player-info">
+                <h5>${title}</h5>
+                <p>📺 ${channel} • ⏱️ ${duration}</p>
+            </div>
+        </div>
+    `;
+    
+    // Scroll to video
+    document.getElementById('videoPlayerSection').scrollIntoView({ behavior: 'smooth' });
 }

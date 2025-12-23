@@ -4,7 +4,7 @@ Uses pre-trained model for 38 plant diseases detection
 """
 
 import torch
-from PIL import Image
+from PIL import Image, ImageEnhance
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 import numpy as np
 from disease_data import DISEASE_DATABASE
@@ -47,8 +47,11 @@ class HuggingFaceDetector:
             dict: Detection results with disease info
         """
         try:
-            # Load image
+            # Load and preprocess image
             image = Image.open(image_path).convert('RGB')
+            
+            # Improve image quality for better detection
+            image = self._enhance_image(image)
             
             if self.model is None or self.processor is None:
                 return self._fallback_detection(image)
@@ -63,7 +66,7 @@ class HuggingFaceDetector:
             
             # Get predictions
             probabilities = torch.nn.functional.softmax(logits, dim=-1)
-            top_probs, top_indices = torch.topk(probabilities, k=3)
+            top_probs, top_indices = torch.topk(probabilities, k=5)  # Get top 5
             
             # Get top prediction
             top_prob = top_probs[0][0].item()
@@ -80,14 +83,15 @@ class HuggingFaceDetector:
                 'disease': disease_key,
                 'disease_label': predicted_label,
                 'confidence': float(top_prob),
-                'top_3_predictions': [
+                'top_5_predictions': [
                     {
                         'label': self.labels[top_indices[0][i].item()],
                         'confidence': float(top_probs[0][i].item())
                     }
-                    for i in range(3)
+                    for i in range(min(5, len(top_probs[0])))
                 ],
-                'disease_info': disease_info
+                'disease_info': disease_info,
+                'detection_quality': self._assess_detection_quality(top_prob, top_probs[0])
             }
             
             return result

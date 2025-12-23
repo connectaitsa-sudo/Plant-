@@ -621,6 +621,12 @@ body::before {
     border: none;
 }
 
+.video-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
 .video-placeholder {
     position: relative;
     cursor: pointer;
@@ -636,7 +642,7 @@ body::before {
     transition: transform 0.3s ease;
 }
 
-.video-placeholder:hover img {
+.video-link:hover .video-placeholder img {
     transform: scale(1.05);
 }
 
@@ -650,11 +656,32 @@ body::before {
     text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
     pointer-events: none;
+    z-index: 2;
 }
 
-.video-placeholder:hover .play-button-overlay {
-    color: var(--primary-color);
-    transform: translate(-50%, -50%) scale(1.1);
+.video-link:hover .play-button-overlay {
+    color: #ff0000;
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.video-overlay-text {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.video-link:hover .video-overlay-text {
+    opacity: 1;
 }
 
 .video-player-info {
@@ -716,6 +743,9 @@ body::before {
 }
 
 .video-card-small {
+    display: block;
+    text-decoration: none;
+    color: inherit;
     background: white;
     border-radius: 8px;
     overflow: hidden;
@@ -725,8 +755,13 @@ body::before {
 }
 
 .video-card-small:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.video-thumbnail {
+    position: relative;
+    overflow: hidden;
 }
 
 .video-card-small img {
@@ -734,6 +769,28 @@ body::before {
     height: 120px;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
+}
+
+.video-card-small:hover img {
+    transform: scale(1.1);
+}
+
+.play-icon-small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.video-card-small:hover .play-icon-small {
+    color: #ff0000;
+    transform: translate(-50%, -50%) scale(1.3);
 }
 
 .video-info-small {

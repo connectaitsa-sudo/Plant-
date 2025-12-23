@@ -273,20 +273,25 @@ function displayDetectionResult(data) {
         const videoId = extractYouTubeId(firstVideo.url);
         
         if (videoId) {
-            // Create embedded player - remove autoplay to fix issues
+            // Create video player with thumbnail and direct YouTube link
             videoPlayerContainer.innerHTML = `
                 <div class="video-player-wrapper">
-                    <div class="video-placeholder" onclick="loadVideo('${videoId}', this)">
-                        <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${firstVideo.title}">
-                        <div class="play-button-overlay">
-                            <i class="fas fa-play-circle"></i>
+                    <a href="${firstVideo.url}" target="_blank" class="video-link">
+                        <div class="video-placeholder">
+                            <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" 
+                                 onerror="this.src='https://img.youtube.com/vi/${videoId}/mqdefault.jpg'" 
+                                 alt="${firstVideo.title}">
+                            <div class="play-button-overlay">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div class="video-overlay-text">Click to Watch</div>
                         </div>
-                    </div>
+                    </a>
                     <div class="video-player-info">
                         <h5>${firstVideo.title}</h5>
                         <p>📺 ${firstVideo.channel} • ⏱️ ${firstVideo.duration}</p>
                         <a href="${firstVideo.url}" target="_blank" class="watch-youtube-btn">
-                            <i class="fab fa-youtube"></i> Watch on YouTube
+                            <i class="fab fa-youtube"></i> Open in YouTube
                         </a>
                     </div>
                 </div>
@@ -296,18 +301,27 @@ function displayDetectionResult(data) {
             if (data.treatment_videos.length > 1) {
                 let moreHTML = '<div class="more-videos"><h5>More Treatment Videos:</h5><div class="videos-grid-small">';
                 
-                data.treatment_videos.slice(1).forEach(video => {
-                    const vid = extractYouTubeId(video.url);
-                    moreHTML += `
-                        <div class="video-card-small" onclick="playVideo('${vid}', '${video.title.replace(/'/g, "\\'")}', '${video.channel}', '${video.duration}')">
-                            <img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" alt="${video.title}">
-                            <div class="video-info-small">
-                                <div class="video-title-small">${video.title}</div>
-                                <div class="video-meta-small">⏱️ ${video.duration}</div>
-                            </div>
-                        </div>
-                    `;
-                });
+                    data.treatment_videos.slice(1).forEach(video => {
+                        const vid = extractYouTubeId(video.url);
+                        if (vid) {
+                            moreHTML += `
+                                <a href="${video.url}" target="_blank" class="video-card-small">
+                                    <div class="video-thumbnail">
+                                        <img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" 
+                                             onerror="this.src='https://img.youtube.com/vi/${vid}/default.jpg'"
+                                             alt="${video.title}">
+                                        <div class="play-icon-small">
+                                            <i class="fas fa-play"></i>
+                                        </div>
+                                    </div>
+                                    <div class="video-info-small">
+                                        <div class="video-title-small">${video.title}</div>
+                                        <div class="video-meta-small">📺 ${video.channel} • ${video.duration}</div>
+                                    </div>
+                                </a>
+                            `;
+                        }
+                    });
                 
                 moreHTML += '</div></div>';
                 moreVideosContainer.innerHTML = moreHTML;
@@ -513,43 +527,5 @@ function extractYouTubeId(url) {
     return (match && match[2].length === 11) ? match[2] : null;
 }
 
-function loadVideo(videoId, element) {
-    // Replace placeholder with actual iframe
-    const wrapper = element.closest('.video-player-wrapper');
-    wrapper.querySelector('.video-placeholder').outerHTML = `
-        <iframe 
-            width="100%" 
-            height="400" 
-            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
-            title="Video Player"
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-        </iframe>
-    `;
-}
-
-function playVideo(videoId, title, channel, duration) {
-    // Switch to different video in player
-    const videoPlayerContainer = document.getElementById('videoPlayerContainer');
-    videoPlayerContainer.innerHTML = `
-        <div class="video-player-wrapper">
-            <div class="video-placeholder" onclick="loadVideo('${videoId}', this)">
-                <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${title}">
-                <div class="play-button-overlay">
-                    <i class="fas fa-play-circle"></i>
-                </div>
-            </div>
-            <div class="video-player-info">
-                <h5>${title}</h5>
-                <p>📺 ${channel} • ⏱️ ${duration}</p>
-                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="watch-youtube-btn">
-                    <i class="fab fa-youtube"></i> Watch on YouTube
-                </a>
-            </div>
-        </div>
-    `;
-    
-    // Scroll to video
-    document.getElementById('videoPlayerSection').scrollIntoView({ behavior: 'smooth' });
-}
+// Videos now open directly in YouTube - no need for complex embed logic
+// This ensures 100% reliability

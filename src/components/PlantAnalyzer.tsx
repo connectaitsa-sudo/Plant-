@@ -1,50 +1,102 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Loader, CheckCircle, XCircle, Camera, AlertCircle } from 'lucide-react'
+import { Upload, Loader, CheckCircle, XCircle, Camera, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import * as openaiService from '../services/openai'
 import * as geminiService from '../services/gemini'
 import { PlantAnalysisResult } from '../services/ai'
 import AIProviderSelector from './AIProviderSelector'
+import DiseaseVideoPlayer from './DiseaseVideoPlayer'
+import { findDiseaseVideo } from '../data/diseaseVideos'
 
 const PlantAnalyzer = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImages, setSelectedImages] = useState<string[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [analyzing, setAnalyzing] = useState(false)
-  const [result, setResult] = useState<PlantAnalysisResult | null>(null)
+  const [results, setResults] = useState<PlantAnalysisResult[]>([])
   const [error, setError] = useState<string | null>(null)
   const [aiProvider, setAIProvider] = useState<'openai' | 'gemini'>('openai')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [showVideo, setShowVideo] = useState(false)
 
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+    const files = event.target.files
+    if (!files || files.length === 0) return
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setError('Please select a valid image file')
-      return
+    const validImages: string[] = []
+    const errors: string[] = []
+
+    // Process all selected files
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        errors.push(`${file.name}: Not a valid image file`)
+        continue
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        errors.push(`${file.name}: Size exceeds 5MB`)
+        continue
+      }
+
+      // Read image
+      try {
+        const imageUrl = await readFileAsDataURL(file)
+        validImages.push(imageUrl)
+      } catch (err) {
+        errors.push(`${file.name}: Failed to read`)
+      }
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image size should be less than 5MB')
-      return
-    }
-
-    // Read and display image
-    const reader = new FileReader()
-    reader.onload = async (e) => {
-      const imageUrl = e.target?.result as string
-      setSelectedImage(imageUrl)
+    if (errors.length > 0) {
+      setError(errors.join(', '))
+    } else {
       setError(null)
-      setResult(null)
-
-      // Start analysis
-      await analyzeImage(imageUrl)
     }
-    reader.readAsDataURL(file)
+
+    if (validImages.length > 0) {
+      setSelectedImages(validImages)
+      setCurrentImageIndex(0)
+      setResults([])
+      setShowVideo(false)
+      
+      // Analyze all images
+      await analyzeAllImages(validImages)
+    }
   }
 
-  const analyzeImage = async (imageUrl: string) => {
+  const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = (e) => resolve(e.target?.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const analyzeAllImages = async (images: string[]) => {
+    const analysisResults: PlantAnalysisResult[] = []
+
+    for (let i = 0; i < images.length; i++) {
+      setCurrentImageIndex(i)
+      const result = await analyzeImage(images[i])
+      if (result) {
+        analysisResults.push(result)
+      }
+    }
+
+    setResults(analysisResults)
+    setCurrentImageIndex(0)
+    
+    // Show video for first result
+    if (analysisResults.length > 0) {
+      setShowVideo(true)
+    }
+  }
+
+  const analyzeImage = async (imageUrl: string): Promise<PlantAnalysisResult | null> => {
     setAnalyzing(true)
     setError(null)
 
@@ -60,10 +112,11 @@ const PlantAnalyzer = () => {
         analysisResult = await openaiService.analyzePlantImage(base64)
       }
       
-      setResult(analysisResult)
+      return analysisResult
     } catch (err) {
       console.error('Analysis error:', err)
       setError(err instanceof Error ? err.message : 'Failed to analyze image')
+      return null
     } finally {
       setAnalyzing(false)
     }
@@ -71,9 +124,9 @@ const PlantAnalyzer = () => {
 
   const handleProviderChange = (provider: 'openai' | 'gemini') => {
     setAIProvider(provider)
-    // If there's a current image, re-analyze with new provider
-    if (selectedImage && !analyzing) {
-      analyzeImage(selectedImage)
+    // If there are images, re-analyze with new provider
+    if (selectedImages.length > 0 && !analyzing) {
+      analyzeAllImages(selectedImages)
     }
   }
 
@@ -82,13 +135,22 @@ const PlantAnalyzer = () => {
   }
 
   const resetAnalysis = () => {
-    setSelectedImage(null)
-    setResult(null)
+    setSelectedImages([])
+    setResults([])
     setError(null)
+    setCurrentImageIndex(0)
+    setShowVideo(false)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
   }
+
+  const selectImage = (index: number) => {
+    setCurrentImageIndex(index)
+  }
+
+  const currentImage = selectedImages[currentImageIndex]
+  const currentResult = results[currentImageIndex]
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -138,20 +200,21 @@ const PlantAnalyzer = () => {
 
         <div className="max-w-4xl mx-auto">
           {/* Upload Area */}
-          {!selectedImage && (
+          {selectedImages.length === 0 && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="glass p-12 rounded-3xl text-center cursor-pointer hover:bg-white/20 transition-all"
               onClick={handleUploadClick}
             >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
-                className="hidden"
-              />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
               
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 5 }}
@@ -160,12 +223,12 @@ const PlantAnalyzer = () => {
                 <Upload className="w-12 h-12 text-white" />
               </motion.div>
 
-              <h3 className="text-2xl font-bold text-white mb-4">Upload Plant Image</h3>
-              <p className="text-gray-400 mb-6">
-                Click to select or drag and drop an image of your plant
+              <h3 className="text-2xl font-bold text-white mb-4">Upload Plant Images</h3>
+              <p className="text-gray-300 mb-6">
+                Click to select multiple images of your plant (up to 10 images)
               </p>
-              <p className="text-sm text-gray-500">
-                Supports JPG, PNG (max 5MB)
+              <p className="text-sm text-gray-400">
+                Supports JPG, PNG (max 5MB per image)
               </p>
 
               <motion.button
@@ -179,22 +242,68 @@ const PlantAnalyzer = () => {
             </motion.div>
           )}
 
-          {/* Image Preview & Results */}
+          {/* Image Gallery & Results */}
           <AnimatePresence mode="wait">
-            {selectedImage && (
+            {selectedImages.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 className="glass p-8 rounded-3xl"
               >
+                {/* Image Thumbnails */}
+                {selectedImages.length > 1 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-white mb-3">Uploaded Images ({selectedImages.length})</h3>
+                    <div className="flex space-x-3 overflow-x-auto pb-2">
+                      {selectedImages.map((img, index) => (
+                        <motion.button
+                          key={index}
+                          whileHover={{ scale: 1.05 }}
+                          onClick={() => selectImage(index)}
+                          className={`relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                            currentImageIndex === index ? 'border-primary-400' : 'border-white/20'
+                          }`}
+                        >
+                          <img src={img} alt={`Plant ${index + 1}`} className="w-full h-full object-cover" />
+                          {currentImageIndex === index && (
+                            <div className="absolute inset-0 bg-primary-500/30 flex items-center justify-center">
+                              <CheckCircle className="w-6 h-6 text-white" />
+                            </div>
+                          )}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Image Preview */}
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-4">Uploaded Image</h3>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-bold text-white">Image {currentImageIndex + 1} of {selectedImages.length}</h3>
+                      {selectedImages.length > 1 && (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => selectImage(Math.max(0, currentImageIndex - 1))}
+                            disabled={currentImageIndex === 0}
+                            className="p-2 glass rounded-lg hover:bg-white/20 disabled:opacity-50 transition-all"
+                          >
+                            <ChevronLeft className="w-5 h-5 text-white" />
+                          </button>
+                          <button
+                            onClick={() => selectImage(Math.min(selectedImages.length - 1, currentImageIndex + 1))}
+                            disabled={currentImageIndex === selectedImages.length - 1}
+                            className="p-2 glass rounded-lg hover:bg-white/20 disabled:opacity-50 transition-all"
+                          >
+                            <ChevronRight className="w-5 h-5 text-white" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
                     <div className="relative rounded-2xl overflow-hidden">
                       <img
-                        src={selectedImage}
+                        src={currentImage}
                         alt="Plant to analyze"
                         className="w-full h-auto object-cover"
                       />
@@ -208,7 +317,7 @@ const PlantAnalyzer = () => {
                       onClick={resetAnalysis}
                       className="mt-4 w-full px-6 py-3 glass text-white rounded-xl hover:bg-white/20 transition-all"
                     >
-                      Upload New Image
+                      Upload New Images
                     </button>
                   </div>
 
@@ -219,7 +328,7 @@ const PlantAnalyzer = () => {
                     {analyzing && (
                       <div className="flex flex-col items-center justify-center h-64 space-y-4">
                         <Loader className="w-12 h-12 text-primary-400 animate-spin" />
-                        <p className="text-gray-400">Analyzing plant image...</p>
+                        <p className="text-gray-300">Analyzing plant image...</p>
                       </div>
                     )}
 
@@ -234,7 +343,7 @@ const PlantAnalyzer = () => {
                       </motion.div>
                     )}
 
-                    {result && !analyzing && (
+                    {currentResult && !analyzing && (
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -243,31 +352,31 @@ const PlantAnalyzer = () => {
                         {/* Disease Name */}
                         <div className="glass p-6 rounded-2xl">
                           <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-2xl font-bold text-gradient">{result.disease}</h4>
-                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getSeverityColor(result.severity)}`}>
-                              {result.severity}
+                            <h4 className="text-2xl font-bold text-gradient">{currentResult.disease}</h4>
+                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getSeverityColor(currentResult.severity)}`}>
+                              {currentResult.severity}
                             </span>
                           </div>
-                          <div className="flex items-center space-x-2 text-gray-400">
+                          <div className="flex items-center space-x-2 text-gray-300">
                             {(() => {
-                              const Icon = getSeverityIcon(result.severity)
+                              const Icon = getSeverityIcon(currentResult.severity)
                               return <Icon className="w-5 h-5" />
                             })()}
-                            <span>Confidence: {result.confidence}%</span>
+                            <span>Confidence: {currentResult.confidence}%</span>
                           </div>
                         </div>
 
                         {/* Description */}
                         <div className="glass p-6 rounded-2xl">
                           <h5 className="font-semibold text-white mb-2">Description</h5>
-                          <p className="text-gray-300">{result.description}</p>
+                          <p className="text-gray-300">{currentResult.description}</p>
                         </div>
 
                         {/* Symptoms */}
                         <div className="glass p-6 rounded-2xl">
                           <h5 className="font-semibold text-white mb-3">Symptoms</h5>
                           <ul className="space-y-2">
-                            {result.symptoms.map((symptom, index) => (
+                            {currentResult.symptoms.map((symptom: string, index: number) => (
                               <li key={index} className="flex items-start space-x-2">
                                 <span className="text-primary-400 mt-1">•</span>
                                 <span className="text-gray-300">{symptom}</span>
@@ -280,7 +389,7 @@ const PlantAnalyzer = () => {
                         <div className="glass p-6 rounded-2xl">
                           <h5 className="font-semibold text-white mb-3">Treatment Recommendations</h5>
                           <ul className="space-y-2">
-                            {result.treatment.map((step, index) => (
+                            {currentResult.treatment.map((step: string, index: number) => (
                               <li key={index} className="flex items-start space-x-2">
                                 <span className="text-primary-400 font-bold mt-1">{index + 1}.</span>
                                 <span className="text-gray-300">{step}</span>
@@ -288,6 +397,17 @@ const PlantAnalyzer = () => {
                             ))}
                           </ul>
                         </div>
+
+                        {/* Watch Video Button */}
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setShowVideo(true)}
+                          className="w-full px-6 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-2"
+                        >
+                          <Camera className="w-5 h-5" />
+                          <span>Watch Treatment Video & Detailed Info</span>
+                        </motion.button>
                       </motion.div>
                     )}
                   </div>
@@ -295,6 +415,14 @@ const PlantAnalyzer = () => {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Disease Video Player */}
+          {showVideo && currentResult && (
+            <DiseaseVideoPlayer
+              diseaseVideo={findDiseaseVideo(currentResult.disease)}
+              onClose={() => setShowVideo(false)}
+            />
+          )}
         </div>
       </div>
     </section>

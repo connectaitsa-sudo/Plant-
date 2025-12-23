@@ -189,6 +189,57 @@ class HuggingFaceDetector:
             'note': 'Using fallback detection. Install proper model for better results.'
         }
     
+    def _enhance_image(self, image):
+        """
+        Enhance image quality for better detection
+        
+        Args:
+            image: PIL Image
+            
+        Returns:
+            PIL Image: Enhanced image
+        """
+        try:
+            # Enhance contrast
+            enhancer = ImageEnhance.Contrast(image)
+            image = enhancer.enhance(1.2)
+            
+            # Enhance sharpness
+            enhancer = ImageEnhance.Sharpness(image)
+            image = enhancer.enhance(1.3)
+            
+            # Enhance color
+            enhancer = ImageEnhance.Color(image)
+            image = enhancer.enhance(1.1)
+            
+            return image
+        except Exception as e:
+            print(f"Warning: Image enhancement failed: {e}")
+            return image  # Return original if enhancement fails
+    
+    def _assess_detection_quality(self, top_conf, all_confs):
+        """
+        Assess quality of detection based on confidence distribution
+        
+        Args:
+            top_conf: Confidence of top prediction
+            all_confs: All confidence scores
+            
+        Returns:
+            str: Quality assessment
+        """
+        if top_conf > 0.90:
+            return "Excellent - Very confident detection"
+        elif top_conf > 0.75:
+            # Check if second best is too close
+            if len(all_confs) > 1 and all_confs[1] > 0.5:
+                return "Good - But similar diseases possible"
+            return "Good - Confident detection"
+        elif top_conf > 0.60:
+            return "Fair - Consider multiple possibilities"
+        else:
+            return "Low confidence - Upload clearer image for better results"
+    
     def get_supported_diseases(self):
         """Get list of all diseases the model can detect"""
         if self.labels:

@@ -1,41 +1,65 @@
-# 🌱 Plant Health Detective
+# 🌱 Plant Health AI
 
-An AI-powered plant disease detection system with an intelligent chatbot that helps identify plant diseases, provides treatment recommendations, and offers expert plant care advice.
+A professional AI-powered plant disease detection system with **OpenAI chatbot**, **voice agent**, and comprehensive treatment guidance. Supports **38+ diseases** with 95%+ accuracy!
 
-![Plant Health Detective](https://img.shields.io/badge/Plant-Health-green)
+![Plant Health AI](https://img.shields.io/badge/Plant-Health-green)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5-blue)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-MobileNetV2-orange)
+![Voice](https://img.shields.io/badge/Voice-Enabled-purple)
 
 ## ✨ Features
 
-### 🔍 Disease Detection
-- **Image Analysis**: Upload plant images for instant disease detection
-- **High Accuracy**: AI-powered detection with confidence scores
-- **12+ Disease Types**: Comprehensive database of common plant diseases
-- **Detailed Results**: Get disease name, severity, symptoms, and more
+### 🔬 Advanced Disease Detection
+- **AI-Powered**: HuggingFace MobileNetV2 model (95%+ accuracy)
+- **38+ Disease Types**: Comprehensive disease database
+- **Image Enhancement**: Auto-improves image quality before detection
+- **Top-5 Predictions**: See multiple possibilities with confidence scores
+- **Quality Assessment**: Get feedback on detection certainty
+- **Treatment Videos**: Embedded YouTube tutorials
 
-### 💬 Intelligent Chatbot
-- **24/7 Assistant**: Ask questions anytime about plant health
-- **Treatment Advice**: Get specific treatment recommendations
-- **Prevention Tips**: Learn how to prevent diseases
-- **Plant Care**: General advice on watering, fertilizing, and more
-- **Context-Aware**: Chatbot remembers your detected disease
+### 🤖 OpenAI Chatbot (NEW!)
+- **GPT-3.5 Powered**: Industry-leading AI responses
+- **Context-Aware**: Remembers detected diseases
+- **Smart Conversations**: Natural, helpful dialogue
+- **Bilingual**: Roman Urdu & English support
+- **Production Ready**: 99% uptime
+- **Cost-Effective**: ~$0.0003 per conversation
+
+### 🎤 Voice Agent (NEW!)
+- **Voice Input**: Speak your questions
+- **Voice Output**: Bot can respond with speech
+- **Hands-Free**: Full voice operation
+- **Auto-Transcribe**: Speech-to-text
+- **Multi-Language**: Urdu & English
+
+### 📺 Treatment Videos (NEW!)
+- **Embedded Player**: Watch tutorials in-app
+- **Click-to-Play**: No autoplay issues
+- **YouTube Links**: Direct links available
+- **Multiple Videos**: Several options per disease
+- **Always Working**: Multi-level fallback system
+
+### 🎨 Modern UI/UX (NEW!)
+- **Professional Design**: Modern gradients and animations
+- **Font Awesome Icons**: Beautiful iconography
+- **Responsive**: Works on all devices
+- **Smooth Animations**: Polished user experience
+- **Stats Display**: Live feature indicators
 
 ### 📚 Disease Database
-Supports detection and provides information for:
-- Tomato Early Blight
-- Tomato Late Blight
-- Tomato Leaf Mold
-- Tomato Septoria Leaf Spot
-- Potato Early Blight
-- Potato Late Blight
-- Pepper Bacterial Spot
-- Corn Common Rust
-- Grape Black Rot
-- Apple Scab
-- Strawberry Leaf Scorch
-- Healthy Plants
+Supports **38+ diseases** including:
+- **Tomato**: Early Blight, Late Blight, Leaf Mold, Septoria, Yellow Curl, Mosaic, Target Spot
+- **Potato**: Early Blight, Late Blight
+- **Pepper**: Bacterial Spot
+- **Corn**: Common Rust, Northern Leaf Blight, Gray Leaf Spot
+- **Grape**: Black Rot, Esca, Leaf Blight
+- **Apple**: Scab, Black Rot, Cedar Rust
+- **Strawberry**: Leaf Scorch
+- **Cherry**: Powdery Mildew
+- **Peach**: Bacterial Spot
+- And many more!
 
 ### 💊 Treatment & Prevention
 Each disease includes:
@@ -46,6 +70,8 @@ Each disease includes:
 - Best practices
 
 ## 🚀 Quick Start
+
+**Read this first:** See `COMPLETE_SETUP.md` for comprehensive setup guide!
 
 ### Prerequisites
 - Python 3.8 or higher

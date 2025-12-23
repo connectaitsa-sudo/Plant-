@@ -13,14 +13,20 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
+const voiceBtn = document.getElementById('voiceBtn');
 const quickButtons = document.querySelectorAll('.quick-btn');
 
 // Current detection context
 let currentDetectionContext = null;
 
+// Voice recognition
+let recognition = null;
+let isListening = false;
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
+    initVoiceRecognition();
 });
 
 function setupEventListeners() {
@@ -49,6 +55,11 @@ function setupEventListeners() {
         if (e.key === 'Enter') sendMessage();
     });
     
+    // Voice input
+    if (voiceBtn) {
+        voiceBtn.addEventListener('click', toggleVoiceInput);
+    }
+    
     // Quick action buttons
     quickButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -57,6 +68,78 @@ function setupEventListeners() {
             sendMessage();
         });
     });
+}
+
+function initVoiceRecognition() {
+    // Check if browser supports speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US'; // Can be changed based on user preference
+        
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            chatInput.value = transcript;
+            stopVoiceInput();
+            // Auto-send after voice input
+            setTimeout(() => sendMessage(), 500);
+        };
+        
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            stopVoiceInput();
+            if (event.error === 'no-speech') {
+                addBotMessage('No speech detected. Please try again.');
+            }
+        };
+        
+        recognition.onend = () => {
+            stopVoiceInput();
+        };
+    } else {
+        // Hide voice button if not supported
+        if (voiceBtn) {
+            voiceBtn.style.display = 'none';
+        }
+    }
+}
+
+function toggleVoiceInput() {
+    if (isListening) {
+        stopVoiceInput();
+    } else {
+        startVoiceInput();
+    }
+}
+
+function startVoiceInput() {
+    if (!recognition) return;
+    
+    try {
+        recognition.start();
+        isListening = true;
+        voiceBtn.classList.add('listening');
+        voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
+        chatInput.placeholder = 'Listening... speak now 🎤';
+    } catch (e) {
+        console.error('Error starting recognition:', e);
+    }
+}
+
+function stopVoiceInput() {
+    if (!recognition) return;
+    
+    try {
+        recognition.stop();
+        isListening = false;
+        voiceBtn.classList.remove('listening');
+        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        chatInput.placeholder = 'Ask me anything... or use voice 🎤';
+    } catch (e) {
+        console.error('Error stopping recognition:', e);
+    }
 }
 
 // File Upload Handlers
@@ -190,21 +273,21 @@ function displayDetectionResult(data) {
         const videoId = extractYouTubeId(firstVideo.url);
         
         if (videoId) {
-            // Create embedded player with autoplay
+            // Create embedded player - remove autoplay to fix issues
             videoPlayerContainer.innerHTML = `
                 <div class="video-player-wrapper">
-                    <iframe 
-                        width="100%" 
-                        height="400" 
-                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0" 
-                        title="${firstVideo.title}"
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
+                    <div class="video-placeholder" onclick="loadVideo('${videoId}', this)">
+                        <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${firstVideo.title}">
+                        <div class="play-button-overlay">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
                     <div class="video-player-info">
                         <h5>${firstVideo.title}</h5>
                         <p>📺 ${firstVideo.channel} • ⏱️ ${firstVideo.duration}</p>
+                        <a href="${firstVideo.url}" target="_blank" class="watch-youtube-btn">
+                            <i class="fab fa-youtube"></i> Watch on YouTube
+                        </a>
                     </div>
                 </div>
             `;
@@ -278,7 +361,8 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 message: message,
-                context: currentDetectionContext
+                context: currentDetectionContext,
+                voice_output: false // Can be enabled for voice responses
             })
         });
         
@@ -291,12 +375,27 @@ async function sendMessage() {
         // Remove typing indicator
         removeTypingIndicator(typingId);
         
-        // Add bot response
-        addBotMessage(data.response);
+        // Add bot response (handle both text and dict responses)
+        const responseText = data.text || data.response || data;
+        addBotMessage(responseText);
+        
+        // Play audio if available
+        if (data.audio) {
+            playAudioResponse(data.audio);
+        }
         
     } catch (error) {
         removeTypingIndicator(typingId);
-        addBotMessage(`Sorry, I encountered an error: ${error.message}`);
+        addBotMessage(`❌ Sorry, I encountered an error: ${error.message}`);
+    }
+}
+
+function playAudioResponse(audioBase64) {
+    try {
+        const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+        audio.play();
+    } catch (e) {
+        console.error('Audio playback error:', e);
     }
 }
 
@@ -414,23 +513,39 @@ function extractYouTubeId(url) {
     return (match && match[2].length === 11) ? match[2] : null;
 }
 
+function loadVideo(videoId, element) {
+    // Replace placeholder with actual iframe
+    const wrapper = element.closest('.video-player-wrapper');
+    wrapper.querySelector('.video-placeholder').outerHTML = `
+        <iframe 
+            width="100%" 
+            height="400" 
+            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+            title="Video Player"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    `;
+}
+
 function playVideo(videoId, title, channel, duration) {
     // Switch to different video in player
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     videoPlayerContainer.innerHTML = `
         <div class="video-player-wrapper">
-            <iframe 
-                width="100%" 
-                height="400" 
-                src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
-                title="${title}"
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+            <div class="video-placeholder" onclick="loadVideo('${videoId}', this)">
+                <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${title}">
+                <div class="play-button-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
             <div class="video-player-info">
                 <h5>${title}</h5>
                 <p>📺 ${channel} • ⏱️ ${duration}</p>
+                <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="watch-youtube-btn">
+                    <i class="fab fa-youtube"></i> Watch on YouTube
+                </a>
             </div>
         </div>
     `;

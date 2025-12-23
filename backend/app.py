@@ -9,16 +9,21 @@ except Exception as e:
     from disease_detector import PlantDiseaseDetector
     USE_HUGGINGFACE = False
 
-# Try to use AI chatbot, fallback to basic if not available
+# Try to use OpenAI chatbot, fallback to basic if not available
 try:
-    from ai_chatbot import AIChatbot
-    chatbot = AIChatbot()
-    print("✅ Using AI Chatbot (Gemini)")
+    from openai_chatbot import OpenAIChatbot
+    chatbot = OpenAIChatbot()
+    print("✅ Using OpenAI Chatbot")
 except Exception as e:
-    print(f"⚠️ Could not load AI chatbot: {e}")
-    from chatbot import PlantHealthChatbot
-    chatbot = PlantHealthChatbot()
-    print("⚠️ Using Basic Chatbot")
+    print(f"⚠️ Could not load OpenAI chatbot: {e}")
+    try:
+        from ai_chatbot import AIChatbot
+        chatbot = AIChatbot()
+        print("✅ Using AI Chatbot (Gemini)")
+    except:
+        from chatbot import PlantHealthChatbot
+        chatbot = PlantHealthChatbot()
+        print("⚠️ Using Basic Chatbot")
 
 from treatment_videos import get_treatment_videos
 from video_generator import get_reliable_videos, UNIVERSAL_FALLBACK_VIDEOS
@@ -98,18 +103,26 @@ def detect_disease():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    """Handle chatbot messages"""
+    """Handle chatbot messages with voice support"""
     try:
         data = request.get_json()
         user_message = data.get('message', '')
         context = data.get('context', {})
+        voice_output = data.get('voice_output', False)
         
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
-        response = chatbot.get_response(user_message, context)
+        # Get response (text and optional audio)
+        result = chatbot.get_response(user_message, context, voice_output)
         
-        return jsonify({'response': response})
+        # Handle both dict and string responses
+        if isinstance(result, dict):
+            response_data = result
+        else:
+            response_data = {'text': result}
+        
+        return jsonify(response_data)
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500

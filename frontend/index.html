@@ -3,19 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Health Detective 🌱</title>
+    <title>🌱 Plant Health AI - Disease Detection & Expert Chatbot</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div class="logo">
-                <span class="logo-icon">🌿</span>
-                <h1>Plant Health Detective</h1>
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🌿</span>
+                    <div class="logo-text">
+                        <h1>Plant Health AI</h1>
+                        <p class="tagline">Disease Detection • Expert Chatbot • Voice Assistant</p>
+                    </div>
+                </div>
+                <div class="header-stats">
+                    <div class="stat">
+                        <i class="fas fa-microscope"></i>
+                        <span>38+ Diseases</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-robot"></i>
+                        <span>AI Powered</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-microphone"></i>
+                        <span>Voice Enabled</span>
+                    </div>
+                </div>
             </div>
-            <p class="tagline">AI-Powered Plant Disease Detection & Treatment Advisor</p>
         </header>
 
         <!-- Main Content -->
@@ -118,16 +137,18 @@
                         </div>
                         
                         <div class="chat-input-container">
+                            <button class="btn btn-voice" id="voiceBtn" title="Voice Input">
+                                <i class="fas fa-microphone"></i>
+                            </button>
                             <input 
                                 type="text" 
                                 id="chatInput" 
                                 class="chat-input" 
-                                placeholder="Ask about plant diseases, treatments, care tips..."
+                                placeholder="Ask me anything... or use voice 🎤"
                                 autocomplete="off"
                             >
-                            <button class="btn btn-send" id="sendBtn">
-                                <span>Send</span>
-                                <span class="send-icon">➤</span>
+                            <button class="btn btn-send" id="sendBtn" title="Send Message">
+                                <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
                     </div>

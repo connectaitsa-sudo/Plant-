@@ -7,6 +7,7 @@ const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 export interface PlantAnalysisResult {
+  plant: string;
   disease: string;
   confidence: number;
   symptoms: string[];
@@ -35,9 +36,10 @@ export async function analyzePlantImage(imageBase64: string): Promise<PlantAnaly
         messages: [
           {
             role: 'system',
-            content: `You are an expert plant pathologist. Analyze plant images and identify diseases. 
+            content: `You are an expert plant pathologist. Analyze plant images and identify the plant species and any diseases. 
             Respond ONLY with valid JSON in this exact format:
             {
+              "plant": "Plant Species Name (e.g., Tomato, Rose, Oak Tree)",
               "disease": "Disease Name",
               "confidence": 0-100,
               "symptoms": ["symptom1", "symptom2"],
@@ -84,6 +86,7 @@ export async function analyzePlantImage(imageBase64: string): Promise<PlantAnaly
     const result = JSON.parse(jsonMatch[0]);
     
     return {
+      plant: result.plant || 'Unknown Plant',
       disease: result.disease || 'Unknown Disease',
       confidence: result.confidence || 0,
       symptoms: result.symptoms || [],

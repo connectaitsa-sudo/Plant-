@@ -7,6 +7,7 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 export interface PlantAnalysisResult {
+  plant: string;
   disease: string;
   confidence: number;
   symptoms: string[];
@@ -34,9 +35,10 @@ export async function analyzePlantImage(imageBase64: string): Promise<PlantAnaly
           {
             parts: [
               {
-                text: `Analyze this plant image and identify any diseases. You are an expert plant pathologist. 
+                text: `Analyze this plant image and identify the plant species and any diseases. You are an expert plant pathologist. 
                 Respond ONLY with valid JSON in this exact format:
                 {
+                  "plant": "Plant Species Name (e.g., Tomato, Rose, Oak Tree)",
                   "disease": "Disease Name",
                   "confidence": 0-100,
                   "symptoms": ["symptom1", "symptom2", "symptom3"],
@@ -78,6 +80,7 @@ export async function analyzePlantImage(imageBase64: string): Promise<PlantAnaly
     const result = JSON.parse(jsonMatch[0]);
     
     return {
+      plant: result.plant || 'Unknown Plant',
       disease: result.disease || 'Unknown Disease',
       confidence: result.confidence || 0,
       symptoms: result.symptoms || [],

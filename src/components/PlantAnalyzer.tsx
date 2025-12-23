@@ -5,7 +5,7 @@ import * as openaiService from '../services/openai'
 import * as geminiService from '../services/gemini'
 import { PlantAnalysisResult } from '../services/ai'
 import AIProviderSelector from './AIProviderSelector'
-import DiseaseVideoPlayer from './DiseaseVideoPlayer'
+import AIVideoTreatment from './AIVideoTreatment'
 import LiveCameraCapture from './LiveCameraCapture'
 import { findDiseaseVideo } from '../data/diseaseVideos'
 
@@ -378,11 +378,23 @@ const PlantAnalyzer = () => {
                         animate={{ opacity: 1 }}
                         className="space-y-4"
                       >
-                        {/* Disease Name */}
-                        <div className="glass p-6 rounded-2xl">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-2xl font-bold text-gradient">{currentResult.disease}</h4>
-                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getSeverityColor(currentResult.severity)}`}>
+                        {/* Plant & Disease Name */}
+                        <div className="glass p-6 rounded-2xl border-2 border-primary-500/30">
+                          {/* Plant Name */}
+                          <div className="mb-4 pb-4 border-b border-white/10">
+                            <p className="text-sm text-gray-400 mb-1">Your Plant:</p>
+                            <h3 className="text-3xl font-bold text-white tracking-tight">
+                              🌿 {currentResult.plant || 'Unknown Plant'}
+                            </h3>
+                          </div>
+                          
+                          {/* Disease Name */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <p className="text-sm text-gray-400 mb-1">Detected Disease:</p>
+                              <h4 className="text-2xl font-bold text-gradient">{currentResult.disease}</h4>
+                            </div>
+                            <span className={`px-4 py-2 rounded-full text-sm font-bold ${getSeverityColor(currentResult.severity)}`}>
                               {currentResult.severity}
                             </span>
                           </div>
@@ -391,7 +403,7 @@ const PlantAnalyzer = () => {
                               const Icon = getSeverityIcon(currentResult.severity)
                               return <Icon className="w-5 h-5" />
                             })()}
-                            <span>Confidence: {currentResult.confidence}%</span>
+                            <span className="font-semibold">Confidence: {currentResult.confidence}%</span>
                           </div>
                         </div>
 
@@ -445,10 +457,11 @@ const PlantAnalyzer = () => {
             )}
           </AnimatePresence>
 
-          {/* Disease Video Player */}
+          {/* AI Video Treatment */}
           {showVideo && currentResult && (
-            <DiseaseVideoPlayer
+            <AIVideoTreatment
               diseaseVideo={findDiseaseVideo(currentResult.disease)}
+              plantName={currentResult.plant}
               onClose={() => setShowVideo(false)}
             />
           )}

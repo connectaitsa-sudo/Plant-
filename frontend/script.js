@@ -179,6 +179,41 @@ function displayDetectionResult(data) {
         .map(prevention => `<li>${prevention}</li>`)
         .join('');
     
+    // Add treatment videos if available
+    if (data.treatment_videos && data.treatment_videos.length > 0) {
+        // Create videos section if it doesn't exist
+        let videosSection = document.getElementById('videosSection');
+        if (!videosSection) {
+            videosSection = document.createElement('div');
+            videosSection.id = 'videosSection';
+            videosSection.className = 'info-section';
+            document.querySelector('.disease-info').appendChild(videosSection);
+        }
+        
+        let videosHTML = '<h4>🎥 Treatment Video Tutorials</h4>';
+        videosHTML += '<div class="videos-grid">';
+        
+        data.treatment_videos.forEach(video => {
+            videosHTML += `
+                <div class="video-card">
+                    <a href="${video.url}" target="_blank" rel="noopener noreferrer">
+                        <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                        <div class="video-info">
+                            <div class="video-title">${video.title}</div>
+                            <div class="video-meta">
+                                <span class="video-duration">⏱️ ${video.duration}</span>
+                                <span class="video-channel">📺 ${video.channel}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `;
+        });
+        
+        videosHTML += '</div>';
+        videosSection.innerHTML = videosHTML;
+    }
+    
     // Show result
     detectionResult.classList.remove('hidden');
     

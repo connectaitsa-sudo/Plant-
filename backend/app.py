@@ -8,7 +8,19 @@ except Exception as e:
     print(f"⚠️ Could not load Hugging Face detector: {e}")
     from disease_detector import PlantDiseaseDetector
     USE_HUGGINGFACE = False
-from chatbot import PlantHealthChatbot
+
+# Try to use AI chatbot, fallback to basic if not available
+try:
+    from ai_chatbot import AIChatbot
+    chatbot = AIChatbot()
+    print("✅ Using AI Chatbot (Gemini)")
+except Exception as e:
+    print(f"⚠️ Could not load AI chatbot: {e}")
+    from chatbot import PlantHealthChatbot
+    chatbot = PlantHealthChatbot()
+    print("⚠️ Using Basic Chatbot")
+
+from treatment_videos import get_treatment_videos
 from werkzeug.utils import secure_filename
 import base64
 
@@ -24,15 +36,13 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 # Create upload folder if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Initialize detector and chatbot
+# Initialize detector
 if USE_HUGGINGFACE:
     print("✅ Using Hugging Face Model (38+ diseases)")
     detector = HuggingFaceDetector()
 else:
     print("⚠️ Using Basic Detector")
     detector = PlantDiseaseDetector()
-
-chatbot = PlantHealthChatbot()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -60,6 +70,11 @@ def detect_disease():
             
             # Detect disease
             result = detector.detect(filepath)
+            
+            # Add treatment videos
+            if 'disease' in result:
+                videos = get_treatment_videos(result['disease'])
+                result['treatment_videos'] = videos
             
             # Clean up uploaded file
             os.remove(filepath)

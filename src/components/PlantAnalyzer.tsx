@@ -6,6 +6,7 @@ import * as geminiService from '../services/gemini'
 import { PlantAnalysisResult } from '../services/ai'
 import AIProviderSelector from './AIProviderSelector'
 import DiseaseVideoPlayer from './DiseaseVideoPlayer'
+import LiveCameraCapture from './LiveCameraCapture'
 import { findDiseaseVideo } from '../data/diseaseVideos'
 
 const PlantAnalyzer = () => {
@@ -17,6 +18,7 @@ const PlantAnalyzer = () => {
   const [aiProvider, setAIProvider] = useState<'openai' | 'gemini'>('openai')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [showVideo, setShowVideo] = useState(false)
+  const [showCamera, setShowCamera] = useState(false)
 
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -145,6 +147,14 @@ const PlantAnalyzer = () => {
     }
   }
 
+  const handleCameraCapture = async (imageData: string) => {
+    setSelectedImages([imageData])
+    setCurrentImageIndex(0)
+    setResults([])
+    setShowVideo(false)
+    await analyzeAllImages([imageData])
+  }
+
   const selectImage = (index: number) => {
     setCurrentImageIndex(index)
   }
@@ -223,22 +233,41 @@ const PlantAnalyzer = () => {
                 <Upload className="w-12 h-12 text-white" />
               </motion.div>
 
-              <h3 className="text-2xl font-bold text-white mb-4">Upload Plant Images</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">Upload or Capture Plant Images</h3>
               <p className="text-gray-300 mb-6">
-                Click to select multiple images of your plant (up to 10 images)
+                Click to select multiple images or use live camera to capture
               </p>
               <p className="text-sm text-gray-400">
                 Supports JPG, PNG (max 5MB per image)
               </p>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-8 px-8 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold inline-flex items-center space-x-2"
-              >
-                <Camera className="w-5 h-5" />
-                <span>Choose Image</span>
-              </motion.button>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleUploadClick()
+                  }}
+                  className="px-8 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold inline-flex items-center space-x-2"
+                >
+                  <Upload className="w-5 h-5" />
+                  <span>Choose Images</span>
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowCamera(true)
+                  }}
+                  className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold inline-flex items-center space-x-2"
+                >
+                  <Camera className="w-5 h-5" />
+                  <span>Live Camera</span>
+                </motion.button>
+              </div>
             </motion.div>
           )}
 
@@ -421,6 +450,14 @@ const PlantAnalyzer = () => {
             <DiseaseVideoPlayer
               diseaseVideo={findDiseaseVideo(currentResult.disease)}
               onClose={() => setShowVideo(false)}
+            />
+          )}
+
+          {/* Live Camera Capture */}
+          {showCamera && (
+            <LiveCameraCapture
+              onCapture={handleCameraCapture}
+              onClose={() => setShowCamera(false)}
             />
           )}
         </div>

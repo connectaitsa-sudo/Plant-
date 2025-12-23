@@ -194,12 +194,16 @@ const VideoTreatments = () => {
               <iframe
                 width="100%"
                 height="100%"
-                src={selectedVideo.videoUrl}
+                src={`${selectedVideo.videoUrl}?autoplay=1&cc_load_policy=1`}
                 title={selectedVideo.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
+              <div className="absolute top-4 right-4 flex items-center space-x-2 text-xs">
+                <span className="px-2 py-1 bg-black/80 rounded text-white">🔊 Audio</span>
+                <span className="px-2 py-1 bg-black/80 rounded text-white">CC</span>
+              </div>
             </div>
             <p className="text-gray-300 mt-4">{selectedVideo.description}</p>
           </motion.div>

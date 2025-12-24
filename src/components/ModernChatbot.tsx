@@ -83,9 +83,12 @@ const ModernChatbot = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
       
+      // Remove emojis from text before speaking
+      const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{2700}-\u{27BF}]/gu, '')
+      
       // Get available voices
       const voices = window.speechSynthesis.getVoices()
-      const utterance = new SpeechSynthesisUtterance(text)
+      const utterance = new SpeechSynthesisUtterance(cleanText)
       
       // Set language-specific voice
       if (lang === 'ar') {
@@ -340,14 +343,14 @@ const ModernChatbot = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-32 right-8 z-50 w-[440px] h-[700px] flex flex-col overflow-hidden rounded-3xl shadow-2xl border-2 border-primary-500/20"
+            className="fixed bottom-20 sm:bottom-24 md:bottom-32 right-2 sm:right-4 md:right-8 z-50 w-[calc(100vw-1rem)] sm:w-[380px] md:w-[420px] lg:w-[440px] h-[calc(100vh-6rem)] sm:h-[600px] md:h-[650px] lg:h-[700px] flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-primary-500/20"
             style={{
               background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%)',
               backdropFilter: 'blur(20px)',
             }}
           >
             {/* Header */}
-            <div className="relative bg-gradient-to-r from-primary-500 via-emerald-500 to-primary-600 p-6 overflow-hidden">
+            <div className="relative bg-gradient-to-r from-primary-500 via-emerald-500 to-primary-600 p-3 sm:p-4 md:p-5 lg:p-6 overflow-hidden">
               {/* Animated background pattern */}
               <motion.div
                 className="absolute inset-0"
@@ -361,17 +364,17 @@ const ModernChatbot = () => {
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               />
               
-              <div className="relative flex items-center justify-between">
-                <div className="flex items-center space-x-4">
+              <div className="relative flex items-center justify-between gap-2">
+                <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-1 min-w-0">
                   <motion.div 
-                    className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center relative overflow-hidden"
+                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center relative overflow-hidden flex-shrink-0"
                     animate={{
                       boxShadow: ['0 0 20px rgba(255,255,255,0.3)', '0 0 40px rgba(255,255,255,0.6)', '0 0 20px rgba(255,255,255,0.3)']
                     }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <Sparkles className="w-8 h-8 text-white absolute animate-pulse" />
-                    <Bot className="w-8 h-8 text-white relative z-10" strokeWidth={2.5} />
+                    <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white absolute animate-pulse" />
+                    <Bot className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white relative z-10" strokeWidth={2.5} />
                     {isSpeaking && (
                       <motion.div
                         className="absolute -bottom-1 -right-1 w-5 h-5 bg-yellow-300 rounded-full"
@@ -380,8 +383,8 @@ const ModernChatbot = () => {
                       />
                     )}
                   </motion.div>
-                  <div>
-                    <h3 className="text-white font-bold text-2xl flex items-center space-x-2 tracking-tight">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-white font-bold text-base sm:text-lg md:text-xl lg:text-2xl flex items-center space-x-2 tracking-tight truncate">
                       <span>Plant Expert</span>
                       {isListening && (
                         <motion.span
@@ -398,25 +401,25 @@ const ModernChatbot = () => {
                         animate={{ scale: [1, 1.3, 1] }}
                         transition={{ duration: 1.5, repeat: Infinity }}
                       />
-                      <span className="text-white/95 text-sm font-medium">
-                        {language === 'ar' ? 'متاح الآن • صوت ونص' : 'Online • Voice & Text'}
+                      <span className="text-white/95 text-xs sm:text-sm font-medium truncate">
+                        {language === 'ar' ? 'متاح الآن' : 'Online • Voice'}
                       </span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
                   {/* Sound toggle */}
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setSoundEnabled(!soundEnabled)}
-                    className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white/30 transition-all"
+                    className="p-1.5 sm:p-2 md:p-2.5 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-white/30 transition-all"
                   >
                     {soundEnabled ? (
-                      <Volume2 className="w-5 h-5 text-white" />
+                      <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     ) : (
-                      <VolumeX className="w-5 h-5 text-white" />
+                      <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     )}
                   </motion.button>
                   
@@ -426,9 +429,9 @@ const ModernChatbot = () => {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                      className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white/30 transition-all"
+                      className="p-1.5 sm:p-2 md:p-2.5 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl hover:bg-white/30 transition-all"
                     >
-                      <Globe className="w-5 h-5 text-white" />
+                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </motion.button>
                     
                     <AnimatePresence>
@@ -549,12 +552,12 @@ const ModernChatbot = () => {
 
             {/* Input Area */}
             <div 
-              className="p-5 border-t-2 border-white/10"
+              className="p-2 sm:p-3 md:p-4 lg:p-5 border-t-2 border-white/10"
               style={{
                 background: 'linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.4))'
               }}
             >
-              <div className="flex space-x-3">
+              <div className="flex space-x-1.5 sm:space-x-2 md:space-x-3">
                 <div className="flex-1 relative">
                   <input
                     ref={inputRef}
@@ -562,8 +565,8 @@ const ModernChatbot = () => {
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder={language === 'ar' ? 'اسأل عن رعاية النباتات...' : 'Ask about plant care...'}
-                    className="w-full px-5 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-all text-base font-medium"
+                    placeholder={language === 'ar' ? 'اسأل...' : 'Ask about plant...'}
+                    className="w-full px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 lg:py-4 bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-xl sm:rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-all text-sm sm:text-base font-medium"
                     disabled={isTyping || isListening}
                     dir={language === 'ar' ? 'rtl' : 'ltr'}
                   />
@@ -584,7 +587,7 @@ const ModernChatbot = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={toggleVoiceInput}
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg ${
+                  className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all shadow-lg flex-shrink-0 ${
                     isListening 
                       ? 'bg-red-500 animate-pulse' 
                       : 'bg-gradient-to-br from-purple-500 to-pink-600'
@@ -592,9 +595,9 @@ const ModernChatbot = () => {
                   disabled={isTyping}
                 >
                   {isListening ? (
-                    <MicOff className="w-6 h-6 text-white" strokeWidth={2.5} />
+                    <MicOff className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
                   ) : (
-                    <Mic className="w-6 h-6 text-white" strokeWidth={2.5} />
+                    <Mic className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
                   )}
                 </motion.button>
 
@@ -604,20 +607,20 @@ const ModernChatbot = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={sendMessage}
                   disabled={!inputMessage.trim() || isTyping || isListening}
-                  className="w-14 h-14 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-2xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl hover:shadow-primary-500/50 transition-all"
+                  className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl hover:shadow-primary-500/50 transition-all flex-shrink-0"
                 >
                   {isTyping ? (
-                    <Loader className="w-6 h-6 text-white animate-spin" strokeWidth={2.5} />
+                    <Loader className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white animate-spin" strokeWidth={2.5} />
                   ) : (
-                    <Send className="w-6 h-6 text-white" strokeWidth={2.5} />
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
                   )}
                 </motion.button>
               </div>
               
-              <p className="text-xs text-gray-400 mt-3 text-center font-medium">
+              <p className="text-xs sm:text-sm text-gray-400 mt-2 sm:mt-3 text-center font-medium hidden sm:block">
                 {language === 'ar' 
-                  ? '🎤 استخدم الصوت أو اكتب رسالتك • الذكاء الاصطناعي متاح' 
-                  : '🎤 Use voice or type your message • AI powered'}
+                  ? 'استخدم الصوت أو اكتب' 
+                  : 'Voice or type message'}
               </p>
             </div>
           </motion.div>

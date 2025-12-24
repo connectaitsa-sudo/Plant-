@@ -32,53 +32,60 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
   const generateVideoSlides = (): VideoSlide[] => {
     return [
       {
-        id: 1,
-        title: `${diseaseVideo.diseaseName} Detection`,
-        content: `Your plant "${plantName || 'Unknown Plant'}" has been diagnosed with ${diseaseVideo.diseaseName}. This is a ${diseaseVideo.severity.toLowerCase()} severity condition that requires immediate attention.`,
-        duration: 5000,
-        voiceText: `Your plant has been diagnosed with ${diseaseVideo.diseaseName}. This is a ${diseaseVideo.severity.toLowerCase()} severity condition.`
+      id: 1,
+      title: `${diseaseVideo.diseaseName} Detected`,
+      content: `Plant: ${plantName || 'Unknown Plant'}\n\nDisease: ${diseaseVideo.diseaseName}\n\nSeverity: ${diseaseVideo.severity}\n\nThis condition requires immediate treatment to save your plant.`,
+      duration: 8000,
+      voiceText: `Your plant has been diagnosed with ${diseaseVideo.diseaseName}. This is a ${diseaseVideo.severity.toLowerCase()} severity condition that requires immediate treatment.`
       },
       {
         id: 2,
-        title: 'Understanding the Disease',
+        title: 'What is This Disease?',
         content: diseaseVideo.detailedDescription,
-        duration: 6000,
+        duration: 10000,
         voiceText: diseaseVideo.detailedDescription
       },
       {
         id: 3,
-        title: 'Identifying Symptoms',
-        content: `Look for these key symptoms:\n\n${diseaseVideo.symptoms.map((s, i) => `${i + 1}. ${s}`).join('\n\n')}`,
-        duration: 7000,
-        voiceText: `Key symptoms include: ${diseaseVideo.symptoms.join('. ')}`
+        title: 'Key Symptoms to Look For',
+        content: `${diseaseVideo.symptoms.map((s, i) => `${i + 1}. ${s}`).join('\n\n')}`,
+        duration: 12000,
+        voiceText: `The key symptoms you should look for include: ${diseaseVideo.symptoms.join('. ')}`
       },
       {
         id: 4,
-        title: 'Root Causes',
-        content: `This disease is typically caused by:\n\n${diseaseVideo.causes.map((c, i) => `${i + 1}. ${c}`).join('\n\n')}`,
-        duration: 6000,
-        voiceText: `The main causes are: ${diseaseVideo.causes.join('. ')}`
+        title: 'Why Does This Happen?',
+        content: `Common causes:\n\n${diseaseVideo.causes.map((c, i) => `${i + 1}. ${c}`).join('\n\n')}`,
+        duration: 10000,
+        voiceText: `This disease is commonly caused by the following factors: ${diseaseVideo.causes.join('. ')}`
       },
       {
         id: 5,
-        title: 'Treatment Protocol',
-        content: `Follow these steps for effective treatment:\n\n${diseaseVideo.treatment.map((t, i) => `Step ${i + 1}: ${t}`).join('\n\n')}`,
-        duration: 8000,
-        voiceText: `Treatment steps: ${diseaseVideo.treatment.join('. ')}`
+        title: 'Organic Home Remedies',
+        content: `Natural treatment methods:\n\n${diseaseVideo.treatment.slice(0, 3).map((t, i) => `${i + 1}. ${t}`).join('\n\n')}`,
+        duration: 12000,
+        voiceText: `First, let's look at organic home remedies. ${diseaseVideo.treatment.slice(0, 3).join('. ')}`
       },
       {
         id: 6,
-        title: 'Prevention Measures',
-        content: `Prevent future outbreaks by:\n\n${diseaseVideo.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n\n')}`,
-        duration: 7000,
-        voiceText: `Prevention tips: ${diseaseVideo.prevention.join('. ')}`
+        title: 'Chemical Treatments & Medicines',
+        content: `Professional chemical solutions:\n\n${diseaseVideo.treatment.slice(3).map((t, i) => `${i + 1}. ${t}`).join('\n\n')}\n\nFor severe cases, consult with agricultural experts for proper fungicides or pesticides.`,
+        duration: 12000,
+        voiceText: `Now for chemical treatments. ${diseaseVideo.treatment.slice(3).join('. ')} For severe cases, consult with agricultural experts for proper fungicides or pesticides.`
       },
       {
         id: 7,
-        title: 'Recovery Timeline',
-        content: `With proper treatment, your plant should show improvement within 1-2 weeks. Continue monitoring and maintain the treatment protocol for best results. Consult with our AI assistant if symptoms persist.`,
-        duration: 5000,
-        voiceText: 'With proper treatment, your plant should recover within one to two weeks. Continue monitoring progress.'
+        title: 'Prevention is Better Than Cure',
+        content: `Keep your plant healthy:\n\n${diseaseVideo.prevention.map((p, i) => `${i + 1}. ${p}`).join('\n\n')}`,
+        duration: 12000,
+        voiceText: `To prevent this disease in the future, follow these important tips: ${diseaseVideo.prevention.join('. ')}`
+      },
+      {
+        id: 8,
+        title: 'Expected Recovery & Follow-up',
+        content: `Timeline:\n• Week 1: Initial improvement visible\n• Week 2-3: Significant recovery\n• Week 4: Full recovery expected\n\nContinue treatment and monitor daily. If symptoms worsen, seek expert help immediately.`,
+        duration: 10000,
+        voiceText: 'With proper treatment, your plant should show initial improvement within the first week. Significant recovery occurs in two to three weeks, and full recovery is expected within four weeks. Continue the treatment protocol and monitor your plant daily. If symptoms worsen or persist, consult with agricultural experts immediately.'
       }
     ]
   }
@@ -98,7 +105,7 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
     if (!isMuted && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel()
       const utterance = new SpeechSynthesisUtterance(text)
-      utterance.rate = 0.9
+      utterance.rate = 0.85 // Slower for better understanding
       utterance.pitch = 1
       utterance.volume = 1
       window.speechSynthesis.speak(utterance)
@@ -208,30 +215,30 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/98 z-[70] flex items-center justify-center"
+        className="fixed inset-0 bg-black/98 z-[70] flex items-center justify-center overflow-auto"
       >
-        <div className="w-full h-full flex flex-col p-4 md:p-8 max-w-7xl mx-auto">
+        <div className="w-full h-full flex flex-col p-3 sm:p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
           {/* Header */}
           <motion.div
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="flex items-center justify-between mb-6"
+            className="flex items-start justify-between mb-3 sm:mb-4 md:mb-6 gap-2"
           >
-            <div>
-              <h2 className="text-2xl md:text-4xl font-bold text-white mb-2 tracking-tight">
-                AI Treatment Video: <span className="text-gradient">{diseaseVideo.diseaseName}</span>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-1 sm:mb-2 tracking-tight leading-tight">
+                <span className="text-gradient">{diseaseVideo.diseaseName}</span>
               </h2>
               {plantName && (
-                <p className="text-gray-400 text-lg">
+                <p className="text-gray-400 text-sm sm:text-base md:text-lg truncate">
                   Plant: <span className="text-primary-400 font-semibold">{plantName}</span>
                 </p>
               )}
             </div>
             <button
               onClick={handleClose}
-              className="p-3 hover:bg-white/10 rounded-full transition-all group"
+              className="p-2 sm:p-3 hover:bg-white/10 rounded-full transition-all group flex-shrink-0"
             >
-              <X className="w-8 h-8 text-gray-400 group-hover:text-white transition-colors" />
+              <X className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-gray-400 group-hover:text-white transition-colors" />
             </button>
           </motion.div>
 
@@ -287,7 +294,7 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 md:mb-8 leading-tight px-2"
                       >
                         {slides[currentSlide].title}
                       </motion.h3>
@@ -297,7 +304,7 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.4 }}
-                        className="text-xl md:text-2xl text-gray-200 leading-relaxed whitespace-pre-line"
+                        className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed whitespace-pre-line px-2"
                       >
                         {slides[currentSlide].content}
                       </motion.div>
@@ -318,54 +325,54 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
                 </div>
 
                 {/* Controls Overlay */}
-                <div className="absolute bottom-8 left-0 right-0 px-8">
-                  <div className="glass p-4 rounded-2xl flex items-center justify-between">
+                <div className="absolute bottom-2 sm:bottom-4 md:bottom-6 lg:bottom-8 left-0 right-0 px-2 sm:px-4 md:px-6 lg:px-8">
+                  <div className="glass p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl flex items-center justify-between gap-2 sm:gap-3 md:gap-4">
                     {/* Play/Pause */}
                     <button
                       onClick={togglePlayPause}
-                      className="p-3 bg-gradient-to-r from-primary-500 to-emerald-500 rounded-full hover:scale-110 transition-transform"
+                      className="p-2 sm:p-2.5 md:p-3 bg-gradient-to-r from-primary-500 to-emerald-500 rounded-full hover:scale-110 transition-transform flex-shrink-0"
                     >
                       {isPlaying ? (
-                        <Pause className="w-6 h-6 text-white" fill="white" />
+                        <Pause className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" fill="white" />
                       ) : (
-                        <Play className="w-6 h-6 text-white" fill="white" />
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" fill="white" />
                       )}
                     </button>
 
                     {/* Slide Indicators */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 flex-1 justify-center overflow-x-auto">
                       {slides.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => goToSlide(index)}
-                          className={`h-2 rounded-full transition-all ${
+                          className={`h-1.5 sm:h-2 rounded-full transition-all flex-shrink-0 ${
                             index === currentSlide
-                              ? 'w-8 bg-primary-400'
+                              ? 'w-6 sm:w-8 bg-primary-400'
                               : index < currentSlide
-                              ? 'w-2 bg-primary-600'
-                              : 'w-2 bg-white/30'
+                              ? 'w-1.5 sm:w-2 bg-primary-600'
+                              : 'w-1.5 sm:w-2 bg-white/30'
                           }`}
                         />
                       ))}
                     </div>
 
                     {/* Right Controls */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
                       <button
                         onClick={toggleMute}
-                        className="p-3 hover:bg-white/10 rounded-full transition-all"
+                        className="p-2 sm:p-2.5 md:p-3 hover:bg-white/10 rounded-full transition-all"
                       >
                         {isMuted ? (
-                          <VolumeX className="w-6 h-6 text-white" />
+                          <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                         ) : (
-                          <Volume2 className="w-6 h-6 text-white" />
+                          <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                         )}
                       </button>
                       <button
                         onClick={toggleFullscreen}
-                        className="p-3 hover:bg-white/10 rounded-full transition-all"
+                        className="p-2 sm:p-2.5 md:p-3 hover:bg-white/10 rounded-full transition-all hidden sm:block"
                       >
-                        <Maximize2 className="w-6 h-6 text-white" />
+                        <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                       </button>
                     </div>
                   </div>
@@ -379,15 +386,15 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-6 text-center"
+            className="mt-3 sm:mt-4 md:mt-6 text-center px-2"
           >
-            <p className="text-gray-400 mb-4">
-              AI-Generated Treatment Video • Voice Narration • Interactive Presentation
+            <p className="text-gray-400 mb-3 sm:mb-4 text-xs sm:text-sm md:text-base">
+              AI-Generated • Voice • Interactive
             </p>
-            <div className="flex items-center justify-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 md:gap-4">
               <button
                 onClick={handleClose}
-                className="px-8 py-4 glass text-white rounded-full hover:bg-white/20 transition-all"
+                className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-4 glass text-white rounded-full hover:bg-white/20 transition-all text-sm sm:text-base"
               >
                 Close Video
               </button>
@@ -399,9 +406,9 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
                   setProgress(0)
                   setIsPlaying(true)
                 }}
-                className="px-8 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all flex items-center space-x-2"
+                className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 md:py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-2 text-sm sm:text-base"
               >
-                <Play className="w-5 h-5" />
+                <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Replay Video</span>
               </motion.button>
             </div>

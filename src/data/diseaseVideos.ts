@@ -19,9 +19,9 @@ export interface DiseaseVideo {
 export const diseaseVideos: Record<string, DiseaseVideo> = {
   'Powdery Mildew': {
     diseaseName: 'Powdery Mildew',
-    videoUrl: 'https://www.youtube.com/embed/kbFMkXTMucA',
-    videoTitle: 'Complete Guide to Treating Powdery Mildew',
-    duration: '8:45',
+    videoUrl: 'https://www.youtube.com/embed/r5RaSZh7yQo',
+    videoTitle: 'How to Treat Powdery Mildew - Practical Demonstration',
+    duration: '6:23',
     thumbnail: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=450&fit=crop',
     detailedDescription: 'Powdery mildew is a fungal disease that appears as white or gray powdery spots on leaves and stems. It thrives in warm, dry conditions and can spread quickly if not treated. The fungus feeds on plant nutrients, weakening the plant over time and potentially causing leaf drop and stunted growth.',
     symptoms: [

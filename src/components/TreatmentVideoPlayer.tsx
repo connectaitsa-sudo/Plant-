@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Play, Info, Leaf } from 'lucide-react'
 import { DiseaseVideo } from '../data/diseaseVideos'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface TreatmentVideoPlayerProps {
   diseaseVideo: DiseaseVideo | null
@@ -12,6 +12,14 @@ interface TreatmentVideoPlayerProps {
 const TreatmentVideoPlayer = ({ diseaseVideo, plantName, onClose }: TreatmentVideoPlayerProps) => {
   const [showInfo, setShowInfo] = useState(false)
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
+
   if (!diseaseVideo) return null
 
   return (
@@ -20,7 +28,7 @@ const TreatmentVideoPlayer = ({ diseaseVideo, plantName, onClose }: TreatmentVid
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/95 z-[70] flex items-center justify-center backdrop-blur-sm"
+        className="fixed inset-0 bg-black/95 z-[70] flex items-center justify-center backdrop-blur-sm overflow-y-auto"
         onClick={onClose}
       >
         <motion.div
@@ -28,7 +36,7 @@ const TreatmentVideoPlayer = ({ diseaseVideo, plantName, onClose }: TreatmentVid
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-6xl mx-4 glass rounded-3xl overflow-hidden border-2 border-primary-500/30"
+          className="w-full max-w-6xl mx-4 my-8 glass rounded-3xl overflow-hidden border-2 border-primary-500/30"
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-primary-500 via-emerald-500 to-primary-600 p-4 sm:p-6">

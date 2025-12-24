@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Target, Users, Award, Zap } from 'lucide-react'
+import TechnologyModal from './TechnologyModal'
 
 const stats = [
   { icon: Target, value: '99.8%', label: 'Accuracy Rate', color: 'from-green-400 to-emerald-500' },
@@ -14,6 +16,7 @@ const About = () => {
     triggerOnce: true,
     threshold: 0.1,
   })
+  const [showTechModal, setShowTechModal] = useState(false)
 
   return (
     <section id="about" className="relative py-20 overflow-hidden">
@@ -80,7 +83,11 @@ const About = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="mt-8 px-8 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all"
+              onClick={() => {
+                console.log('Technology button clicked!')
+                setShowTechModal(true)
+              }}
+              className="mt-8 px-8 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all cursor-pointer"
             >
               Learn More About Our Technology
             </motion.button>
@@ -122,6 +129,12 @@ const About = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Technology Modal */}
+      <TechnologyModal
+        isOpen={showTechModal}
+        onClose={() => setShowTechModal(false)}
+      />
     </section>
   )
 }

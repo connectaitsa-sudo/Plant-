@@ -4,7 +4,7 @@ import { Upload, Loader, CheckCircle, XCircle, Camera, AlertCircle, ChevronLeft,
 import * as openaiService from '../services/openai'
 import { PlantAnalysisResult } from '../services/ai'
 import LiveCameraCapture from './LiveCameraCapture'
-import EnhancedTreatmentView from './EnhancedTreatmentView'
+import DetailedInfoModal from './DetailedInfoModal'
 import { findDiseaseVideo } from '../data/diseaseVideos'
 
 const PlantAnalyzer = () => {
@@ -14,7 +14,7 @@ const PlantAnalyzer = () => {
   const [results, setResults] = useState<PlantAnalysisResult[]>([])
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [showVideo, setShowVideo] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
   const [showCamera, setShowCamera] = useState(false)
 
   const handleImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ const PlantAnalyzer = () => {
       setSelectedImages(validImages)
       setCurrentImageIndex(0)
       setResults([])
-      setShowVideo(false)
+      setShowDetails(false)
       
       // Analyze all images
       await analyzeAllImages(validImages)
@@ -121,7 +121,7 @@ const PlantAnalyzer = () => {
     setResults([])
     setError(null)
     setCurrentImageIndex(0)
-    setShowVideo(false)
+    setShowDetails(false)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -131,7 +131,7 @@ const PlantAnalyzer = () => {
     setSelectedImages([imageData])
     setCurrentImageIndex(0)
     setResults([])
-    setShowVideo(false)
+    setShowDetails(false)
     await analyzeAllImages([imageData])
   }
 
@@ -395,15 +395,15 @@ const PlantAnalyzer = () => {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => {
-                              console.log('Video button clicked!', currentResult)
-                              setShowVideo(true)
+                              console.log('Details button clicked!', currentResult)
+                              setShowDetails(true)
                             }}
                             className="w-full mt-3 px-6 py-3.5 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-2 cursor-pointer group"
                           >
-                            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>Watch Treatment Video & Full Details</span>
+                            <span>View Complete Treatment Details</span>
                           </motion.button>
                         </div>
 
@@ -483,12 +483,12 @@ const PlantAnalyzer = () => {
             )}
           </AnimatePresence>
 
-          {/* Enhanced Treatment View */}
-          {showVideo && currentResult && (
-            <EnhancedTreatmentView
+          {/* Detailed Info Modal */}
+          {showDetails && currentResult && (
+            <DetailedInfoModal
               diseaseVideo={findDiseaseVideo(currentResult.disease)}
               plantName={currentResult.plant}
-              onClose={() => setShowVideo(false)}
+              onClose={() => setShowDetails(false)}
             />
           )}
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Video, Camera, Bell, MapPin, Activity, Settings, BarChart3, AlertTriangle, CheckCircle, Wifi, WifiOff, Shield, Zap, Calendar, Download } from 'lucide-react'
+import { Video, Camera, Bell, MapPin, Activity, Settings, BarChart3, AlertTriangle, Wifi, WifiOff, Shield, Zap, Calendar, Download } from 'lucide-react'
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')

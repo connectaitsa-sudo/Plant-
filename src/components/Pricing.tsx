@@ -74,9 +74,10 @@ const Pricing = () => {
         'Cloud storage (50GB)'
       ],
       limitations: [],
-      cta: 'Start 14-Day Trial',
-      popular: true,
-      badge: 'Most Popular',
+              cta: 'Start 14-Day Trial',
+              ctaLink: '#dashboard',
+              popular: true,
+              badge: 'Most Popular',
       setupCost: '$500 one-time setup',
       idealFor: 'Professional farmers, greenhouses, medium farms (50-200 acres)',
       savings: 'Save $598/year with annual plan'
@@ -121,9 +122,10 @@ const Pricing = () => {
         'Quarterly business reviews'
       ],
       limitations: [],
-      cta: 'Contact Sales',
-      popular: false,
-      badge: 'Enterprise Grade',
+              cta: 'Contact Sales',
+              ctaLink: '#dashboard',
+              popular: false,
+              badge: 'Enterprise Grade',
       setupCost: '$2,500 setup + hardware consultation',
       idealFor: 'Large farms (500+ acres), agricultural corporations, government departments',
       savings: 'Save $1,998/year with annual plan'
@@ -309,17 +311,18 @@ const Pricing = () => {
               </ul>
 
               {/* CTA Button */}
-              <motion.button
+              <motion.a
+                href={plan.ctaLink || '#pricing'}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
+                className={`w-full py-4 rounded-xl font-bold text-lg transition-all block text-center ${
                   plan.popular
                     ? 'bg-gradient-to-r from-primary-500 to-emerald-500 text-white hover:shadow-xl hover:shadow-primary-500/50'
                     : 'glass text-white hover:bg-white/20'
                 }`}
               >
                 {plan.cta}
-              </motion.button>
+              </motion.a>
             </motion.div>
           ))}
         </div>

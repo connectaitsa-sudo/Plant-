@@ -91,11 +91,7 @@ const PlantAnalyzer = () => {
 
     setResults(analysisResults)
     setCurrentImageIndex(0)
-    
-    // Show video for first result
-    if (analysisResults.length > 0) {
-      setShowVideo(true)
-    }
+    // Don't auto-show video - let user click the button
   }
 
   const analyzeImage = async (imageUrl: string): Promise<PlantAnalysisResult | null> => {
@@ -443,8 +439,11 @@ const PlantAnalyzer = () => {
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          onClick={() => setShowVideo(true)}
-                          className="w-full px-6 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-2"
+                          onClick={() => {
+                            console.log('Video button clicked!', currentResult)
+                            setShowVideo(true)
+                          }}
+                          className="w-full px-6 py-4 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-2 cursor-pointer"
                         >
                           <Camera className="w-5 h-5" />
                           <span>Watch Treatment Video & Detailed Info</span>

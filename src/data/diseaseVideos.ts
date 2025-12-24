@@ -221,6 +221,52 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
     severity: 'High'
   },
 
+  'Pear Scab': {
+    diseaseName: 'Pear Scab',
+    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoTitle: 'Complete Pear Scab Treatment Guide',
+    duration: '10:30',
+    thumbnail: 'https://images.unsplash.com/photo-1568897165-4cfdb4e2a5f0?w=800&h=450&fit=crop',
+    detailedDescription: 'Pear scab is a fungal disease causing dark, scabby spots on leaves and fruit. The fungus (Venturia pirina) overwinters on fallen leaves and releases spores in spring. It thrives in cool, wet conditions and can severely reduce fruit quality and tree vigor.',
+    symptoms: [
+      'Dark, olive-green to black spots on leaves',
+      'Velvety or scabby appearance on infected areas',
+      'Fruit develops raised, corky scabs',
+      'Severely infected fruit may crack or deform',
+      'Premature leaf and fruit drop',
+      'Reduced photosynthesis and tree vigor'
+    ],
+    causes: [
+      'Fungal spores from overwintering leaves',
+      'Cool, wet spring weather (55-75°F)',
+      'Extended leaf wetness periods',
+      'Poor air circulation',
+      'High humidity and frequent rain',
+      'Susceptible pear varieties'
+    ],
+    treatment: [
+      'Apply copper-based fungicide at bud break',
+      'Spray sulfur during wet periods',
+      'Use systemic fungicides like myclobutanil',
+      'Remove and destroy infected leaves',
+      'Prune trees for better air flow',
+      'Fungicide every 7-14 days in wet weather',
+      'Use neem oil for organic control',
+      'Rake fallen leaves in autumn'
+    ],
+    prevention: [
+      'Plant scab-resistant pear varieties',
+      'Remove all fallen leaves and fruit',
+      'Prune for good air circulation',
+      'Avoid overhead irrigation',
+      'Apply dormant spray before bud break',
+      'Maintain proper tree spacing',
+      'Keep area clean of debris',
+      'Monitor and spray before rain'
+    ],
+    severity: 'Medium'
+  },
+
   'Blight': {
     diseaseName: 'Blight',
     videoUrl: 'https://www.youtube.com/embed/eKbAf7cOcwE',
@@ -281,6 +327,7 @@ export function findDiseaseVideo(detectedDisease: string): DiseaseVideo | null {
 
   // Check for common keywords
   const keywords = {
+    'scab': 'Pear Scab',
     'mildew': 'Powdery Mildew',
     'spot': 'Leaf Spot',
     'rot': 'Root Rot',
@@ -291,9 +338,11 @@ export function findDiseaseVideo(detectedDisease: string): DiseaseVideo | null {
 
   for (const [keyword, diseaseName] of Object.entries(keywords)) {
     if (diseaseLower.includes(keyword)) {
-      return diseaseVideos[diseaseName]
+      console.log('✅ Keyword match found:', keyword, '→', diseaseName)
+      return diseaseVideos[diseaseName] || diseaseVideos['Powdery Mildew']
     }
   }
 
-  return null
+  console.log('⚠️ No match, returning default')
+  return diseaseVideos['Powdery Mildew']
 }

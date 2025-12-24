@@ -351,61 +351,86 @@ const PlantAnalyzer = () => {
 
                     {currentResult && !analyzing && (
                       <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-5"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="space-y-6"
                       >
-                        {/* Plant & Disease Header - Enhanced */}
-                        <div className="glass p-6 rounded-2xl border-2 border-primary-500/40 bg-gradient-to-br from-primary-500/10 to-emerald-500/10">
-                          <div className="flex items-start justify-between gap-4 mb-4">
-                            <div className="flex-1">
-                              {/* Plant Name */}
-                              <div className="mb-4">
-                                <p className="text-xs text-gray-400 mb-1 uppercase tracking-wider">Your Plant Species</p>
-                                <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-                                  <span className="text-3xl">🌿</span>
-                                  {currentResult.plant || 'Unknown Plant'}
-                                </h3>
-                              </div>
-                              
-                              {/* Disease Name */}
-                              <div>
-                                <p className="text-xs text-gray-400 mb-1 uppercase tracking-wider">Detected Disease</p>
-                                <h4 className="text-xl sm:text-2xl font-bold text-gradient mb-2">{currentResult.disease}</h4>
-                              </div>
+                        {/* AI Analysis Result Header - PROMINENT */}
+                        <div className="text-center mb-6">
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: 'spring', delay: 0.2 }}
+                            className="inline-block px-6 py-2 bg-gradient-to-r from-primary-500 to-emerald-500 rounded-full mb-4"
+                          >
+                            <span className="text-white font-bold text-lg">✓ AI Analysis Complete!</span>
+                          </motion.div>
+                          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                            Prediction Results
+                          </h2>
+                          <p className="text-gray-400">Here's what our AI found in your plant</p>
+                        </div>
+
+                        {/* Plant & Disease Card - HUGE & PROMINENT */}
+                        <motion.div 
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="glass p-8 rounded-3xl border-4 border-primary-500/50 bg-gradient-to-br from-primary-500/20 to-emerald-500/20 shadow-2xl"
+                        >
+                          <div className="text-center mb-6">
+                            <span className="text-6xl mb-4 block">🌿</span>
+                            <h3 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                              {currentResult.plant || 'Unknown Plant'}
+                            </h3>
+                            <div className="flex items-center justify-center gap-3 mt-4">
+                              <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-emerald-500 rounded"></div>
+                              <span className="text-gray-400 text-lg">Detected Disease</span>
+                              <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-emerald-500 rounded"></div>
                             </div>
+                            <h4 className="text-3xl md:text-4xl font-bold mt-4 mb-4">
+                              <span className="text-gradient">{currentResult.disease}</span>
+                            </h4>
                             
-                            {/* Severity Badge */}
-                            <div className="flex flex-col items-end gap-2">
-                              <span className={`px-4 py-2 rounded-full text-sm font-bold shadow-lg ${getSeverityColor(currentResult.severity)}`}>
-                                {currentResult.severity}
-                              </span>
-                              <div className="flex items-center space-x-1.5 text-gray-300 bg-black/30 px-3 py-1.5 rounded-full">
+                            {/* Severity & Confidence */}
+                            <div className="flex items-center justify-center gap-4 mt-6">
+                              <div className={`px-6 py-3 rounded-full text-lg font-bold shadow-xl ${getSeverityColor(currentResult.severity)}`}>
+                                {currentResult.severity} Severity
+                              </div>
+                              <div className="flex items-center space-x-2 bg-black/40 px-6 py-3 rounded-full border-2 border-primary-500/30">
                                 {(() => {
                                   const Icon = getSeverityIcon(currentResult.severity)
-                                  return <Icon className="w-4 h-4" />
+                                  return <Icon className="w-6 h-6 text-primary-400" />
                                 })()}
-                                <span className="text-xs font-semibold">{currentResult.confidence}%</span>
+                                <span className="text-white font-bold text-lg">{currentResult.confidence}% Confident</span>
                               </div>
                             </div>
                           </div>
                           
-                          {/* Quick Action Button */}
+                          {/* Description - Prominent */}
+                          <div className="mt-6 p-6 bg-black/30 rounded-2xl border border-white/10">
+                            <p className="text-xl text-white leading-relaxed text-center">
+                              {currentResult.description}
+                            </p>
+                          </div>
+                          
+                          {/* Big Action Button */}
                           <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
                             onClick={() => {
                               console.log('Details button clicked!', currentResult)
                               setShowDetails(true)
                             }}
-                            className="w-full mt-3 px-6 py-3.5 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-2 cursor-pointer group"
+                            className="w-full mt-6 px-8 py-5 bg-gradient-to-r from-primary-500 via-emerald-500 to-primary-600 text-white rounded-2xl font-bold text-xl hover:shadow-2xl hover:shadow-primary-500/50 transition-all flex items-center justify-center space-x-3 cursor-pointer group"
                           >
-                            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg className="w-7 h-7 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <span>View Complete Treatment Details</span>
+                            <span>View Complete Treatment Guide →</span>
                           </motion.button>
-                        </div>
+                        </motion.div>
 
                         {/* Quick Info Cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -16,9 +16,12 @@ const Navigation = () => {
 
   const navItems = [
     { name: 'Home', href: '#home' },
+    { name: 'Features', href: '#features' },
     { name: 'Analyzer', href: '#analyzer' },
+    { name: 'About', href: '#about' },
     { name: 'Pricing', href: '#pricing' },
-    { name: 'Dashboard', href: '#dashboard', special: true }
+    { name: 'Gallery', href: '#gallery' },
+    { name: '🎯 Dashboard', href: '#dashboard', special: true }
   ]
 
   return (

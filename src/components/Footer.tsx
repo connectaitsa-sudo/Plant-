@@ -15,6 +15,7 @@ const Footer = () => {
       links: [
         { name: 'Features', href: '#features' },
         { name: 'Analyzer', href: '#analyzer' },
+        { name: 'Pricing', href: '#pricing' },
         { name: 'Videos', href: '#videos' },
         { name: 'Info', href: '#info' }
       ],

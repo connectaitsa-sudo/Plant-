@@ -10,6 +10,7 @@ import LoadingScreen from './components/LoadingScreen'
 import CTA from './components/CTA'
 import Testimonials from './components/Testimonials'
 import PlantAnalyzer from './components/PlantAnalyzer'
+import Pricing from './components/Pricing'
 import ModernChatbot from './components/ModernChatbot'
 import VideoTreatments from './components/VideoTreatments'
 import DetailedInfo from './components/DetailedInfo'
@@ -42,6 +43,7 @@ function App() {
         <VideoTreatments />
         <DetailedInfo />
         <About />
+        <Pricing />
         <DiseaseGallery />
         <Testimonials />
         <CTA />

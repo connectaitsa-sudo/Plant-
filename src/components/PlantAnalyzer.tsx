@@ -4,7 +4,7 @@ import { Upload, Loader, CheckCircle, XCircle, Camera, AlertCircle, ChevronLeft,
 import * as openaiService from '../services/openai'
 import { PlantAnalysisResult } from '../services/ai'
 import LiveCameraCapture from './LiveCameraCapture'
-import TreatmentVideoPlayer from './TreatmentVideoPlayer'
+import EnhancedTreatmentView from './EnhancedTreatmentView'
 import { findDiseaseVideo } from '../data/diseaseVideos'
 
 const PlantAnalyzer = () => {
@@ -483,9 +483,9 @@ const PlantAnalyzer = () => {
             )}
           </AnimatePresence>
 
-          {/* Treatment Video Player */}
+          {/* Enhanced Treatment View */}
           {showVideo && currentResult && (
-            <TreatmentVideoPlayer
+            <EnhancedTreatmentView
               diseaseVideo={findDiseaseVideo(currentResult.disease)}
               plantName={currentResult.plant}
               onClose={() => setShowVideo(false)}

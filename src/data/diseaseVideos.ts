@@ -5,6 +5,7 @@
 export interface DiseaseVideo {
   diseaseName: string
   videoUrl: string
+  videoType: 'heygen' | 'youtube' // NEW: Specify video type
   videoTitle: string
   duration: string
   thumbnail: string
@@ -19,9 +20,10 @@ export interface DiseaseVideo {
 export const diseaseVideos: Record<string, DiseaseVideo> = {
   'Powdery Mildew': {
     diseaseName: 'Powdery Mildew',
-    videoUrl: 'https://www.youtube.com/embed/r5RaSZh7yQo',
-    videoTitle: 'How to Treat Powdery Mildew - Practical Demonstration',
-    duration: '6:23',
+    videoUrl: 'https://app.heygen.com/embeds/YOUR_VIDEO_ID', // HeyGen AI generated video
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment Guide - Powdery Mildew',
+    duration: '3:45',
     thumbnail: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=450&fit=crop',
     detailedDescription: 'Powdery mildew is a fungal disease that appears as white or gray powdery spots on leaves and stems. It thrives in warm, dry conditions and can spread quickly if not treated. The fungus feeds on plant nutrients, weakening the plant over time and potentially causing leaf drop and stunted growth.',
     symptoms: [
@@ -59,9 +61,10 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
   
   'Leaf Spot': {
     diseaseName: 'Leaf Spot Disease',
-    videoUrl: 'https://www.youtube.com/embed/8w3wmQAMoxQ',
-    videoTitle: 'Treating Leaf Spot Diseases - Complete Guide',
-    duration: '6:30',
+    videoUrl: 'https://app.heygen.com/embeds/LEAFSPOT_VIDEO_ID',
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment - Leaf Spot Disease',
+    duration: '4:15',
     thumbnail: 'https://images.unsplash.com/photo-1466781783364-36c955e42a7f?w=800&h=450&fit=crop',
     detailedDescription: 'Leaf spot diseases are caused by various fungi and bacteria that create circular or irregular spots on plant leaves. These spots can be brown, black, tan, or yellow and may have distinct borders. Left untreated, leaf spots can merge, causing entire leaves to die and drop prematurely.',
     symptoms: [
@@ -99,9 +102,10 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
 
   'Root Rot': {
     diseaseName: 'Root Rot',
-    videoUrl: 'https://www.youtube.com/embed/go8kLRsRCjk',
-    videoTitle: 'Root Rot Treatment and Prevention',
-    duration: '10:15',
+    videoUrl: 'https://app.heygen.com/embeds/ROOTROT_VIDEO_ID',
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment - Root Rot',
+    duration: '5:30',
     thumbnail: 'https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=800&h=450&fit=crop',
     detailedDescription: 'Root rot is a serious fungal disease caused by overwatering and poor drainage. The roots become waterlogged and oxygen-starved, allowing fungi like Pythium and Phytophthora to attack. Infected roots turn brown or black, become mushy, and lose their ability to absorb water and nutrients.',
     symptoms: [
@@ -141,9 +145,10 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
 
   'Rust Disease': {
     diseaseName: 'Rust Disease',
-    videoUrl: 'https://www.youtube.com/embed/Lp0KdMf7YdQ',
-    videoTitle: 'How to Control Plant Rust Diseases',
-    duration: '7:20',
+    videoUrl: 'https://app.heygen.com/embeds/RUST_VIDEO_ID',
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment - Rust Disease',
+    duration: '4:30',
     thumbnail: 'https://images.unsplash.com/photo-1470058869958-2a77ade41c02?w=800&h=450&fit=crop',
     detailedDescription: 'Rust diseases are caused by various fungi that create orange, yellow, or brown pustules on plant leaves, resembling rust on metal. These pustules contain thousands of spores that spread easily through wind and water. Rust weakens plants by reducing photosynthesis and can spread rapidly in humid conditions.',
     symptoms: [
@@ -181,9 +186,10 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
 
   'Bacterial Wilt': {
     diseaseName: 'Bacterial Wilt',
-    videoUrl: 'https://www.youtube.com/embed/PZvTmRl8WnU',
-    videoTitle: 'Understanding and Managing Bacterial Wilt',
-    duration: '9:10',
+    videoUrl: 'https://app.heygen.com/embeds/BACTERIALWILT_VIDEO_ID',
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment - Bacterial Wilt',
+    duration: '5:15',
     thumbnail: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=450&fit=crop',
     detailedDescription: 'Bacterial wilt is a devastating disease caused by bacteria that invade and block the plant\'s vascular system. The bacteria multiply rapidly, clogging water-conducting vessels and causing rapid wilting and plant death. It spreads through contaminated soil, water, tools, and insects.',
     symptoms: [
@@ -223,9 +229,10 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
 
   'Pear Scab': {
     diseaseName: 'Pear Scab',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    videoTitle: 'Complete Pear Scab Treatment Guide',
-    duration: '10:30',
+    videoUrl: 'https://app.heygen.com/embeds/PEARSCAB_VIDEO_ID',
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment - Pear Scab',
+    duration: '4:00',
     thumbnail: 'https://images.unsplash.com/photo-1568897165-4cfdb4e2a5f0?w=800&h=450&fit=crop',
     detailedDescription: 'Pear scab is a fungal disease causing dark, scabby spots on leaves and fruit. The fungus (Venturia pirina) overwinters on fallen leaves and releases spores in spring. It thrives in cool, wet conditions and can severely reduce fruit quality and tree vigor.',
     symptoms: [
@@ -269,9 +276,10 @@ export const diseaseVideos: Record<string, DiseaseVideo> = {
 
   'Blight': {
     diseaseName: 'Blight',
-    videoUrl: 'https://www.youtube.com/embed/eKbAf7cOcwE',
-    videoTitle: 'Treating Early and Late Blight',
-    duration: '11:30',
+    videoUrl: 'https://app.heygen.com/embeds/BLIGHT_VIDEO_ID',
+    videoType: 'heygen',
+    videoTitle: 'AI-Generated Treatment - Blight',
+    duration: '5:00',
     thumbnail: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&h=450&fit=crop',
     detailedDescription: 'Blight diseases are severe fungal infections that cause rapid browning, withering, and death of plant tissues. Early blight and late blight are most common, affecting leaves, stems, and fruits. These diseases can destroy entire crops within days under favorable conditions.',
     symptoms: [

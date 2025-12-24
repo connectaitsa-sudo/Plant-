@@ -12,30 +12,46 @@ const Footer = () => {
   const footerLinks = [
     {
       title: 'Product',
-      links: ['Features', 'Pricing', 'API', 'Documentation'],
+      links: [
+        { name: 'Features', href: '#features' },
+        { name: 'Analyzer', href: '#analyzer' },
+        { name: 'Videos', href: '#videos' },
+        { name: 'Info', href: '#info' }
+      ],
     },
     {
       title: 'Company',
-      links: ['About', 'Blog', 'Careers', 'Contact'],
+      links: [
+        { name: 'About', href: '#about' },
+        { name: 'Team', href: '#about' },
+        { name: 'Contact', href: '#cta' },
+        { name: 'Testimonials', href: '#testimonials' }
+      ],
     },
     {
       title: 'Resources',
-      links: ['Community', 'Help Center', 'Partners', 'Status'],
-    },
-    {
-      title: 'Legal',
-      links: ['Privacy', 'Terms', 'Cookie Policy', 'Licenses'],
+      links: [
+        { name: 'Disease Gallery', href: '#diseases' },
+        { name: 'Detailed Info', href: '#info' },
+        { name: 'AI Chat', href: '#analyzer' },
+        { name: 'Help', href: '#cta' }
+      ],
     },
   ]
 
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    alert('Thanks for subscribing! Feature coming soon.')
+  }
+
   return (
-    <footer className="relative bg-gradient-to-b from-black to-primary-950/20 pt-20 pb-10">
+    <footer className="relative bg-gradient-to-b from-black to-primary-950/20 pt-16 pb-8">
       {/* Decorative Top Border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500 to-transparent"></div>
 
       <div className="container mx-auto px-6">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <motion.div
@@ -88,14 +104,19 @@ const Footer = () => {
               transition={{ delay: index * 0.1 }}
             >
               <h4 className="text-white font-semibold mb-4">{section.title}</h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2">
                 {section.links.map((link) => (
-                  <li key={link}>
+                  <li key={link.name}>
                     <a
-                      href="#"
-                      className="text-gray-400 hover:text-primary-400 transition-colors inline-block hover:translate-x-1 transform duration-200"
+                      href={link.href}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        const element = document.querySelector(link.href)
+                        element?.scrollIntoView({ behavior: 'smooth' })
+                      }}
+                      className="text-gray-400 hover:text-primary-400 transition-colors inline-block hover:translate-x-1 transform duration-200 cursor-pointer"
                     >
-                      {link}
+                      {link.name}
                     </a>
                   </li>
                 ))}
@@ -113,42 +134,53 @@ const Footer = () => {
         >
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-2xl font-bold text-white mb-3">Stay Updated</h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-400 mb-4">
               Get the latest updates on plant care tips and new features
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3 bg-white/5 border border-white/10 rounded-full text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-all"
+                required
+                className="flex-1 px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-all"
               />
               <motion.button
+                type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all"
+                className="px-6 py-2.5 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full font-semibold hover:shadow-lg hover:shadow-primary-500/50 transition-all"
               >
                 Subscribe
               </motion.button>
-            </div>
+            </form>
           </div>
         </motion.div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="pt-6 border-t border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
             <p className="text-gray-400 text-sm">
               © 2025 PlantCure. All rights reserved.
             </p>
-            <div className="flex items-center space-x-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+            <div className="flex items-center space-x-4 text-sm">
+              <button 
+                onClick={() => alert('Privacy Policy - Feature coming soon')}
+                className="text-gray-400 hover:text-primary-400 transition-colors cursor-pointer"
+              >
                 Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+              </button>
+              <button 
+                onClick={() => alert('Terms of Service - Feature coming soon')}
+                className="text-gray-400 hover:text-primary-400 transition-colors cursor-pointer"
+              >
                 Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+              </button>
+              <button 
+                onClick={() => alert('Cookie Settings - Feature coming soon')}
+                className="text-gray-400 hover:text-primary-400 transition-colors cursor-pointer"
+              >
                 Cookie Settings
-              </a>
+              </button>
             </div>
           </div>
         </div>

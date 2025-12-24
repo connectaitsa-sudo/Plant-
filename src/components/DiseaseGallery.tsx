@@ -69,7 +69,7 @@ const DiseaseGallery = () => {
   })
 
   return (
-    <section id="diseases" className="relative py-32 overflow-hidden">
+    <section id="diseases" className="relative py-20 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black via-primary-950/20 to-black"></div>

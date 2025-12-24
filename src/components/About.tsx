@@ -16,7 +16,7 @@ const About = () => {
   })
 
   return (
-    <section id="about" className="relative py-32 overflow-hidden">
+    <section id="about" className="relative py-20 overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-primary-950/10 to-black"></div>
       

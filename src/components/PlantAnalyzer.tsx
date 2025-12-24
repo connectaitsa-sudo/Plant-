@@ -181,7 +181,7 @@ const PlantAnalyzer = () => {
   }
 
   return (
-    <section id="analyzer" className="relative py-32 overflow-hidden">
+    <section id="analyzer" className="relative py-20 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-primary-950/20 to-black"></div>
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl animate-pulse-slow"></div>

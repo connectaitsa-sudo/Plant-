@@ -68,7 +68,7 @@ const VideoTreatments = () => {
   const [selectedVideo, setSelectedVideo] = useState<typeof videos[0] | null>(null)
 
   return (
-    <section id="videos" className="relative py-32 overflow-hidden">
+    <section id="videos" className="relative py-20 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-primary-950/10 to-black"></div>
       <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-slow"></div>

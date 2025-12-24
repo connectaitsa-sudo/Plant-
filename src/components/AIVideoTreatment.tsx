@@ -89,8 +89,7 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsGenerating(false)
-      startAutoPlay()
-    }, 2000)
+    }, 1000)
     return () => clearTimeout(timer)
   }, [])
 
@@ -121,7 +120,7 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
         clearInterval(progressIntervalRef.current)
       }
       
-      progressIntervalRef.current = setInterval(() => {
+      progressIntervalRef.current = window.setInterval(() => {
         elapsed += interval
         setProgress((elapsed / duration) * 100)
         
@@ -136,14 +135,15 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
             }
           }
         }
-      }, interval)
+      }, interval) as unknown as number
     }
   }
 
   // Handle play/pause
   useEffect(() => {
-    if (isPlaying && !isGenerating) {
-      startAutoPlay()
+    if (isPlaying && !isGenerating && slides.length > 0) {
+      const timer = setTimeout(() => startAutoPlay(), 500)
+      return () => clearTimeout(timer)
     } else {
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current)
@@ -156,7 +156,7 @@ const AIVideoTreatment = ({ diseaseVideo, plantName, onClose }: AIVideoTreatment
         clearInterval(progressIntervalRef.current)
       }
     }
-  }, [isPlaying, currentSlide, isGenerating])
+  }, [isPlaying, currentSlide, isGenerating, slides])
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying)

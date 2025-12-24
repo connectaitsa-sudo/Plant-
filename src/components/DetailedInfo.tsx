@@ -158,7 +158,7 @@ const DetailedInfo = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0])
 
   return (
-    <section id="info" className="relative py-32 overflow-hidden">
+    <section id="info" className="relative py-20 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-primary-950/5 to-black"></div>
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
